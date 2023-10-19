@@ -1,15 +1,28 @@
 const express = require('express');
+const session = require('express-session');
+const authRoutes = require('../router/auth.router');
 const morgan = require("morgan");
-const router = require("../router/product.router")
 
 const app = express();
 
+const path = require('path');
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '..', 'views'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+
+
+
 app.use(morgan("dev"));
 
-app.get('/', (req, res) => {
-    res.send('This is Express');
-})
+app.use(session({
+  secret: 'tu_secreto',
+  resave: false,
+  saveUninitialized: true
+}));
 
+app.use(authRoutes);
 
-app.use("/api/v1", router);
 module.exports = app;

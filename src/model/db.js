@@ -16,11 +16,11 @@ const sequelize = new Sequelize('skycontrol', 'root', '', {
 // }
 // testConnection();
 
-const Equipo = require('./models/Equipo')(sequelize, Sequelize.DataTypes);
-const InstanciaEquipo = require('./models/InstanciaEquipo')(sequelize, Sequelize.DataTypes);
-const Tour = require('./models/Tour')(sequelize, Sequelize.DataTypes);
-const Tanda = require('./models/Tanda')(sequelize, Sequelize.DataTypes);
-const Usuario = require('./models/Usuario')(sequelize, Sequelize.DataTypes);
+const Equipo = require('./Equipo')(sequelize, Sequelize.DataTypes);
+const InstanciaEquipo = require('./InstanciaEquipo')(sequelize, Sequelize.DataTypes);
+const Tour = require('./Tour')(sequelize, Sequelize.DataTypes);
+const Tanda = require('./Tanda')(sequelize, Sequelize.DataTypes);
+const Usuario = require('./Usuario')(sequelize, Sequelize.DataTypes);
 
 // Definición de relaciones
 Equipo.hasMany(InstanciaEquipo, { foreignKey: 'equipo_id' });

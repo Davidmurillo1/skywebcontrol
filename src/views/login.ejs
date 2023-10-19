@@ -1,0 +1,88 @@
+<%- include('partials/headerLogin.ejs') %>
+    
+
+    <div class="container mt-5">
+        <div class="row no-gutters login-section">
+            <!-- Columna de inicio de sesión -->
+            <div class="col-md-6 login">
+                <div class="card border-0" style="width: 80%;">
+                        <h3 style="text-align: center;">Iniciar sesión</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="text" class="form-label">Usuario</label>
+                                <input type="text" class="form-control" id="user" placeholder="Escribe tu usuario">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="password" placeholder="Contraseña">
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <!-- Columna con la imagen de fondo y el logo -->
+            <div class="col-md-6 bg-logo">
+                <img src="/img/logo-trek.png" alt="Logo de la empresa">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Estilo para la sección completa */
+        .login-section {
+            min-height: 80vh; /* Ajusta este valor según la altura que desees */
+            border-radius: 15px; /* Bordes redondeados */
+            overflow: hidden; /* Para asegurar que el contenido interno respete los bordes redondeados */
+        }
+
+        .login {
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilo para la columna con la imagen de fondo */
+        .bg-logo {
+            background-image: url('/img/trek-hombre.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Overlay blanco con transparencia */
+        .bg-logo::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0, 0.6);
+            z-index: 1;
+        }
+
+        .bg-logo img {
+            max-width: 60%;
+            z-index: 2;
+        }
+
+        /* Eliminando espacios entre columnas */
+        .no-gutters {
+            margin-right: 0;
+            margin-left: 0;
+
+            > .col,
+            > [class*="col-"] {
+                padding-right: 0;
+                padding-left: 0;
+            }
+        }
+    </style>
+</body>
+</html>
