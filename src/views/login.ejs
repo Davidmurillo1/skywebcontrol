@@ -7,14 +7,14 @@
             <div class="col-md-6 login">
                 <div class="card border-0" style="width: 80%;">
                         <h3 style="text-align: center;">Iniciar sesión</h3>
-                        <form>
+                        <form action="/login" method="post">
                             <div class="mb-3">
                                 <label for="text" class="form-label">Usuario</label>
-                                <input type="text" class="form-control" id="user" placeholder="Escribe tu usuario">
+                                <input type="text" class="form-control" id="user" name="usuario" placeholder="Escribe tu usuario">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" placeholder="Contraseña">
+                                <input type="password" class="form-control" id="password" name="contrasena" placeholder="Contraseña">
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">Iniciar sesión</button>

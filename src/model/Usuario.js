@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {
+    tableName: 'usuario',  // Esto especifica el nombre de la tabla manualmente
     hooks: {
       beforeCreate: async (usuario) => {
         const salt = await bcrypt.genSalt(10);
