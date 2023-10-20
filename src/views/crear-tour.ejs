@@ -1,4 +1,9 @@
-<%- include('partials/headerOperador.ejs') %>
+
+<% if (usuario && usuario.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+  <% } else if (usuario && usuario.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+  <% } %>
 
 
 <div class="container mt-5">

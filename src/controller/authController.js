@@ -14,6 +14,7 @@ exports.login = async (req, res) => {
       req.session.usuario = {
         usuario: user.usuario,
         nombre: user.nombre,
+        role: user.rol
       };
       res.redirect('/inicio');
     } else {
@@ -30,10 +31,6 @@ exports.logout = (req, res) => {
   res.redirect('/login');
 };
 
-exports.getInicio = (req, res) => {
-  if (req.session && req.session.usuario) {
-    res.render('inicio', { usuario: req.session.usuario, error: null });
-  } else {
-    res.redirect('/login');  // redirige al usuario a la página de login si no ha iniciado sesión
-  }
+exports.getConfig = (req, res) => {
+  res.render('configuraciones', { error: null });
 };

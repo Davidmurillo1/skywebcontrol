@@ -30,6 +30,7 @@ app.use(session({
 
 app.use(express.json()); 
 
+
 const path = require('path');
 
 app.set('view engine', 'ejs');
@@ -47,6 +48,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
+app.use((req, res, next) => {
+  res.locals.usuario = req.session.usuario;
+  next();
+});
 
 app.use(authRoutes);
 app.use(usuariosRoutes);

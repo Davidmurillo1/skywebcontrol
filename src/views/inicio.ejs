@@ -1,5 +1,9 @@
-<%- include('partials/headerOperador.ejs') %>
 
+<% if (usuario && usuario.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+  <% } else if (usuario && usuario.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+  <% } %>
 <style>
     .equipo-disponible {
         color: green;
@@ -37,10 +41,8 @@
             <!-- Tarjeta compacta para la fecha y botón -->
             <div class="card date-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <!-- Input para introducir la fecha -->
-                    <input type="date" class="form-control d-inline-block" style="width: auto;">
-                    <!-- Botón para aplicar la fecha -->
-                    <button class="btn btn-outline-secondary ml-2">Aplicar Fecha</button>
+                    <input type="date" class="form-control d-inline-block" style="width: auto;" value="<%= fecha %>" id="fecha-input">
+                    <button class="btn btn-outline-secondary ml-2" id="aplicar-fecha-btn">Aplicar Fecha</button>
                 </div>
             </div>
         </div>
@@ -54,34 +56,37 @@
     </div>
 
     <div class="row mt-5">
-        <!-- Ejemplo de carta -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-calendar-alt"></i> 20/10/2023
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">09:00 AM - 11:00 AM</h5>
-                    <p class="card-text">
-                        <strong>Head Guide:</strong> Juan Pérez <br>
-                        <strong>Estado del Equipo:</strong> <span class="equipo-disponible"><i class="fas fa-check-circle"></i> Disponible</span>
-                    </p>
-                    <a href="#" class="btn btn-primary"><i class="fas fa-tools"></i> Registrar Equipo</a>
+        <% 
+        let toursOrdenados = toursRecurrentes.concat(toursDelDia).sort((a, b) => {
+            return moment(a.horario, 'HH:mm').valueOf() - moment(b.horario, 'HH:mm').valueOf();
+        });
+    
+        toursOrdenados.forEach(tour => { 
+        %>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-alt"></i> <%= tour.fecha ? moment(tour.fecha).format('DD/MM/YYYY') : 'Recurrente' %>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= moment(tour.horario, 'HH:mm').format('hh:mm A') %></h5>
+                        <!-- ... -->
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Puedes replicar y modificar la estructura de la carta para otros horarios de tour -->
-
-        <!-- Ejemplo de otra carta -->
-        <div class="col-md-4">
-        </div>
-
-        <!-- Ejemplo de otra carta -->
-        <div class="col-md-4">
-            <!-- Contenido de la carta -->
-        </div>
+        <% }); %>
     </div>
+    
+
 </section>
+
+<script>
+    // Añade un evento de click al botón para redirigir al usuario a la URL con la nueva fecha
+    document.getElementById('aplicar-fecha-btn').addEventListener('click', () => {
+        const fechaSeleccionada = document.getElementById('fecha-input').value;
+        window.location.href = `/tours?fecha=${fechaSeleccionada}`;
+    });
+</script>
 
 
 </body>
