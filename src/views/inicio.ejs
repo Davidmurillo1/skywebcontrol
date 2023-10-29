@@ -1,10 +1,12 @@
-
 <% if (usuario && usuario.role === 'admin') { %>
     <%- include('partials/headerAdmin.ejs') %>
   <% } else if (usuario && usuario.role === 'operador') { %>
     <%- include('partials/headerOperador.ejs') %>
   <% } %>
-<style>
+
+  <%- console.log(usuario); %>
+
+  <style>
     .equipo-disponible {
         color: green;
     }
@@ -75,6 +77,7 @@
                 </div>
             </div>
         <% }); %>
+        <button class="btn btn-outline-secondary ml-2" id="aplicar-fecha-btn"><a href="/logout">Cerrar Sesión</a></button>
     </div>
     
 

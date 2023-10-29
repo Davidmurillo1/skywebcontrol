@@ -21,6 +21,8 @@ const InstanciaEquipo = require('./InstanciaEquipo')(sequelize, Sequelize.DataTy
 const Tour = require('./Tour')(sequelize, Sequelize.DataTypes);
 const Tanda = require('./Tanda')(sequelize, Sequelize.DataTypes);
 const Usuario = require('./Usuario')(sequelize, Sequelize.DataTypes);
+const CategoriaEquipo = require('./CategoriaEquipo')(sequelize, Sequelize.DataTypes);
+
 
 // Definición de relaciones
 Equipo.hasMany(InstanciaEquipo, { foreignKey: 'equipo_id' });
@@ -35,11 +37,15 @@ InstanciaEquipo.hasMany(Tanda, { foreignKey: 'instancia_id' });
 Tanda.belongsTo(Usuario, { foreignKey: 'usuario' });
 Usuario.hasMany(Tanda, { foreignKey: 'usuario' });
 
+Equipo.belongsTo(CategoriaEquipo, { foreignKey: 'categoria_id' });
+CategoriaEquipo.hasMany(Equipo, { foreignKey: 'categoria_id' });
+
 module.exports = {
   sequelize,
   Equipo,
   InstanciaEquipo,
   Tour,
   Tanda,
-  Usuario
+  Usuario,
+  CategoriaEquipo
 };

@@ -1,0 +1,76 @@
+<% if (usuario && usuario.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+  <% } else if (usuario && usuario.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Sección principal para mostrar equipos -->
+        <div class="col-md-8">
+            <div class="equipos-container row">
+                <% if (equipos && equipos.length > 0) { %>
+                    <% equipos.forEach(equipo => { %>
+                        <div class="equipo-card col-12 col-sm-6 col-md-4 mb-4"> <!-- Añadimos clases para controlar el diseño en diferentes tamaños de pantalla -->
+                            <div class="card h-100">
+                                <div class="img-container" style="height: 250px;">
+                                    <% if (equipo.dataURI) { %> <!-- Verifica si el equipo tiene un Data URI -->
+                                        <img style="height: 100%;" src="<%= equipo.dataURI %>" alt="Imagen del equipo <%= equipo.nombre %>" class="card-img-top">
+                                    <% } else { %>
+                                        <div class="card-img-placeholder bg-light d-flex align-items-center justify-content-center">
+                                            <p class="text-muted mb-0">No hay imagen disponible</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= equipo.nombre %></h5>
+                                    <p class="card-text">Categoría: <%= equipo.CategoriaEquipo.nombre %></p>
+                                </div>
+                            </div>
+                        </div>                    
+                    <% }); %>
+                <% } else { %>
+                    <p>No hay equipos registrados</p>
+                <% } %>
+                
+            </div>
+                        
+        </div>
+
+        <!-- Sidebar para filtrar por categoría -->
+        <div class="col-md-4">
+            <div class="sticky-top" style="top: 20px;">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <% if (usuario && usuario.role === 'admin') { %>
+                            <a href="/agregarEquipo" class="btn btn-outline-success"> Registrar Equipo</a>
+                        <% } %>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <% if (usuario && usuario.role === 'admin') { %>
+                            <a href="/crear-categoria" class="btn btn-outline-primary"> Crear Categoría</a>
+                        <% } %>
+                    </div>
+                </div>
+               
+                <h4>Filtrar por Categoría</h4>
+                <ul class="list-group">
+                    <!-- Aquí puedes listar las categorías. Asumo que tienes una lista de categorías disponibles. -->
+                    <li class="list-group-item">
+                        <!-- Agregamos el ID de la categoría como parámetro de consulta -->
+                        <a href="/equipo" style="text-decoration: none;">Todas las categorías</a>
+                    </li>
+                    <% categorias.forEach(categoria => { %>
+                        <li class="list-group-item">
+                            <!-- Agregamos el ID de la categoría como parámetro de consulta -->
+                            <a href="/equipo?categoria=<%= categoria.id %>" style="text-decoration: none;"><%= categoria.nombre %></a>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
