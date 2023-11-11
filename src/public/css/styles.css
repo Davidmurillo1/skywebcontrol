@@ -116,6 +116,19 @@ button:hover {
 }
 
 
+/* ESTILOS PARA EL DETALLE DE EQUIPO*/
+.estado-circulo {
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+.estado-numero {
+    font-size: 14px !important;
+}
+
+
 
 
 

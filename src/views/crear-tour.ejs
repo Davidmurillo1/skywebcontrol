@@ -1,10 +1,8 @@
-
-<% if (usuario && usuario.role === 'admin') { %>
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
     <%- include('partials/headerAdmin.ejs') %>
-  <% } else if (usuario && usuario.role === 'operador') { %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
     <%- include('partials/headerOperador.ejs') %>
-  <% } %>
-
+<% } %>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -57,6 +55,8 @@
             $('#fecha').prop('disabled', true);
         }
     });
+
+    
 </script>
 
 </body>

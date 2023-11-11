@@ -1,0 +1,71 @@
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <% if (typeof messages !== 'undefined' && messages.success) { %>
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Muy bien!</strong> <%= messages.success %>.
+            </div>
+        <% } %>
+        
+        <% if (typeof messages !== 'undefined' && messages.error) { %>
+            <div class="alert alert-danger">
+                <%= messages.error %>
+            </div>
+        <% } %>
+        <div class="col-md-6">
+            <h2>Lista de Tours</h2>
+        </div>
+        <div class="col-md-6 d-md-flex flex-md-row-reverse">
+            <a href="/crear-tour" class="btn btn-outline-success">
+                <i class="fas fa-plus-circle"></i> Crear Tour
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Horario</th>
+                <th>Fecha</th>
+                <th>Repetitivo</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tours.forEach(tour => { %>
+                <tr>
+                    <td><%= tour.horario %></td>
+                    <td>
+                        <% if (tour.repetir === "No") { %>
+                            <%= tour.fecha %>
+                        <% } else { %>
+                            Todos los días
+                        <% } %>
+                    </td>                    
+                    <td><%= tour.repetir %></td>
+                    <% if (usuario && usuario.role === 'admin') { %>
+                        <td>
+                            <a href="/editar-tour/<%= tour.id %>" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/eliminar-tour/<%= tour.id %>" onclick="return confirm('¿Estás seguro de que quieres eliminar este tour?');" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </td>
+                    <% } else { %>
+                        <td>-</td>
+                        <td>-</td>
+                    <% } %>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

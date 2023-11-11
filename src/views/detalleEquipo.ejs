@@ -1,0 +1,143 @@
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+
+<%- include('../public/css/equipo.css') %>
+
+   
+<!-- Contenido Principal -->
+<main class="container my-5">
+    <!-- Sección del Producto -->
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <!-- Imagen del Producto con Efecto Hover -->
+                <% if (equipoImagen) { %>
+                    <img style="width: 100%;" class="img-fluid rounded-start" src="<%= equipoImagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
+                <% } %>
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <!-- Descripción y Detalles del Producto -->
+                    <h1 class="card-title"><%= equipo.nombre %></h1>
+                    <p class="card-text"><%= equipo.descripcion %></p>
+                    <p class="card-text"><small class="text-muted">Detalles adicionales:</small></p>
+
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Marca
+                            <span class="badge bg-primary rounded-pill"><%= equipo.marca %></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Disponibles:
+                            <span class="badge bg-primary rounded-pill" style="background-color: <%= getColorEstado('disponible') %> !important;">
+                                <% let disponibles = conteoEstados.find(estado => estado.dataValues.estado === 'disponible'); %>
+                                <% if(disponibles) { %>
+                                    <%= disponibles.dataValues.cantidad %>
+                                <% } else { %>
+                                    0
+                                <% } %>
+                            </span>
+                        </li>
+                        
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Usando:
+                            <span class="badge bg-primary rounded-pill" style="background-color: <%= getColorEstado('en uso') %> !important;">
+                                <% let enUso = conteoEstados.find(estado => estado.dataValues.estado === 'en uso'); %>
+                                <% if(enUso) { %>
+                                    <%= enUso.dataValues.cantidad %>
+                                <% } else { %>
+                                    0
+                                <% } %>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Dañados:
+                            <span class="badge bg-primary rounded-pill" style="background-color: <%= getColorEstado('dañado') %> !important;">
+                                <% let danados = conteoEstados.find(estado => estado.dataValues.estado === 'dañado'); %>
+                                <% if(danados) { %>
+                                    <%= danados.dataValues.cantidad %>
+                                <% } else { %>
+                                    0
+                                <% } %>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Perdidos:
+                            <span class="badge bg-primary rounded-pill" style="background-color: <%= getColorEstado('perdido') %> !important;">
+                                <% let perdidos = conteoEstados.find(estado => estado.dataValues.estado === 'perdido'); %>
+                                <% if(perdidos) { %>
+                                    <%= perdidos.dataValues.cantidad %>
+                                <% } else { %>
+                                    0
+                                <% } %>
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Cantidad Total:</strong>
+                            <span class="badge bg-primary rounded-pill" style="background-color: black !important;">
+                                <% if(sumaTotalEquipos) { %>
+                                    <strong><%= sumaTotalEquipos %></strong>
+                                <% } else { %>
+                                    <strong>No hay nada que mostrar</strong>
+                                <% } %>
+                            </span>
+                        </li>
+                    </ul>
+                    
+
+
+                    <a href="#" class="btn btn-outline-success mt-3">Añadir nueva unidad</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reseñas y Valoraciones -->
+    <div class="mb-4">
+        <!-- Sección de Instancias del Equipo -->
+        <h3 class="titulo-instancias">Unidades Disponibles:</h3>
+        <div class="instancias-container d-flex">
+            <% equipo.InstanciaEquipos.forEach(instancia => { %>
+                <div class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>;">
+                    <span class="estado-numero"><%= instancia.num_registro %></span>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</main>
+
+
+<style>
+    .estado-circulo {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 5px;
+    }
+
+    .estado-numero {
+        font-size: 16px;
+        color: white;
+    }
+</style>
+
+</div>
+
+<% function getColorEstado(estado) {
+    switch (estado) {
+        case 'disponible': return '#229954';
+        case 'en uso': return '#D4AC0D';
+        case 'dañado': return '#A93226';
+        case 'perdido': return '#A93226';
+        default: return '#B2BABB';
+    }
+} %>

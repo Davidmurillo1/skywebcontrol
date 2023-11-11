@@ -1,4 +1,4 @@
-const { Equipo, CategoriaEquipo } = require('../model/db.js');
+const { Equipo, CategoriaEquipo, InstanciaEquipo, sequelize } = require('../model/db.js');
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = require("../public/js/multerConfig.js");
@@ -111,6 +111,71 @@ exports.postAgregarEquipo = async (req, res) => {
 };
 
 
+//VISTA DETALLADA DEL EQUIPO
+
+exports.getDetalleEquipo = async (req, res) => {
+    try {
+        const equipoId = req.params.id;
+        const equipo = await Equipo.findOne({
+            where: { id: equipoId },
+            include: [InstanciaEquipo] // Asegúrate de que la asociación esté bien configurada
+        });
+
+        if (!equipo) {
+            // Si no se encuentra el equipo, envía una respuesta 404
+            return res.status(404).send("Equipo no encontrado");
+        }
+
+        const sumaTotalEquipos = await InstanciaEquipo.count({
+            where: { equipo_id: equipoId }
+        });
+
+        // Contar equipos según su estado, filtrando por el modeloId
+        const conteoEstados = await InstanciaEquipo.findAll({
+            where: { equipo_id: equipoId },
+            attributes: ['estado', [sequelize.fn('COUNT', sequelize.col('estado')), 'cantidad']],
+            group: ['estado']
+        });
+
+        // Convertir a un objeto para un acceso fácil por estado
+        let conteoPorEstado = {};
+        conteoEstados.forEach(estado => {
+            conteoPorEstado[estado.estado] = estado.cantidad;
+        });
+
+        // Convertir la imagen a Data URI si existe
+        // Considera manejar diferentes tipos de imágenes (no solo jpeg)
+        if (equipo.imagen) {
+            const imagenBase64 = Buffer.from(equipo.imagen).toString('base64');
+            equipo.dataURI = `data:image/jpeg;base64,${imagenBase64}`;
+        }
+
+        // Renderiza la vista con los datos necesarios
+        res.render('detalleEquipo', { equipo: equipo, equipoImagen: equipo.dataURI, usuarioSesion: req.session.usuario, conteoEstados: conteoEstados, sumaTotalEquipos: sumaTotalEquipos });
+        console.log(conteoEstados);
+    } catch (error) {
+        console.error("Error al obtener detalles del equipo:", error);
+        res.status(500).send("Error interno del servidor");
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Mostrar el formulario para añadir una categoría
 exports.getCrearCategoria = async (req, res) => {
     try {
@@ -137,7 +202,7 @@ exports.postCrearCategoria = async (req, res) => {
 
         // Redirigir al usuario a la lista de categorías (o donde prefieras)
         // Esto es solo un ejemplo, deberías redirigir donde tenga sentido en tu aplicación.
-        res.redirect('/equipo');
+        res.redirect('/categorias');
     } catch (error) {
         console.error("Error al crear la categoría:", error);
 
@@ -147,6 +212,72 @@ exports.postCrearCategoria = async (req, res) => {
     }
 };
 
+
+//GESTIÓN DE CATEGORÍAS
+
+exports.getCategorias = async (req, res) => {
+    const categorias = await CategoriaEquipo.findAll();
+
+    res.render('categorias', { categorias: categorias, messages: req.flash(), usuarioSesion: req.session.usuario })
+}
+
+exports.getEditarCategoria = async (req, res) => {
+    try {
+      const categoria = await CategoriaEquipo.findOne({
+        where: { id: req.params.categoria }
+      });
+      if (categoria) {
+        res.render('editar-categoria', { categoria: categoria, usuarioSession: req.session.usuario });
+      } else {
+        res.status(404).send('Categoría no encontrada');
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Hubo un error al obtener el usuario');
+    }
+  };
+
+exports.postEditarCategoria = async (req, res) => {
+     const categoria = req.params.categoriaId
+    try {
+      await CategoriaEquipo.update(
+        {
+          nombre: req.body.nombre,
+          descripcion: req.body.descripcion,
+        },
+        {
+          where: { id: categoria }
+        }
+      );
+      res.redirect('/categorias');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Hubo un error al editar la categoría');
+    }
+  };
+
+exports.postEliminarCategoria = async (req, res) => {
+    //Extraer datos del formulario
+    const {categoria} = req.body;
+
+
+    try {
+        const resultado = await CategoriaEquipo.destroy({
+            where: {id: categoria}
+        });
+
+        if (resultado) {
+            req.flash('success', 'Categoría eliminada exitosamente');
+            res.redirect("/categorias");
+        } else {
+            req.flash('error', 'Categoría no encontrada');
+            res.redirect("/categorias");
+        }
+    } catch (error) {
+        req.flash('error', 'Error al eliminar la categoría');
+        res.redirect("/categorias");
+    }
+}
 
 exports.upload = upload;
 

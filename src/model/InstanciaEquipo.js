@@ -16,8 +16,16 @@ module.exports = (sequelize, DataTypes) => {
       fecha_ingreso: {
         type: DataTypes.DATEONLY,
         allowNull: false
+      },
+      valor: {
+        type: DataTypes.FLOAT,
+        allowNull: false
       }
+    }, {
+      tableName: 'instancia_equipo'  // Esto especifica el nombre exacto de la tabla en tu base de datos
     });
+
+    
     return InstanciaEquipo;
   };
   

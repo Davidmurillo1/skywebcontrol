@@ -2,9 +2,10 @@
 const { Tour } = require('../model/db');
 const { Op } = require('sequelize');  // Importar Op de sequelize
 const moment = require("moment");
+const { convertirHoraAMPM } = require("../public/js/horaAMPM");
 
 exports.getCrearTour = (req, res) => {
-  res.render('crear-tour', { error: null });
+  res.render('crear-tour', { error: null, usuarioSesion: req.session.usuario });
 };
 
 
@@ -53,4 +54,31 @@ exports.getTours = async (req, res) => {
       console.error(error);
       res.status(500).send('Error del servidor');
   }
+};
+
+
+exports.getMostrarTours = async (req, res) => {
+    try {
+        const tours = await Tour.findAll({
+            order: [
+                ['repetir', 'DESC'],
+                ['horario', 'ASC'],
+                ['fecha', 'ASC']
+            ]
+        });
+        
+
+        // Convertir datos según lo solicitado
+        const toursMapeados = tours.map(tour => {
+            tour.dataValues.repetir = tour.repetir ? 'Sí' : 'No';
+            tour.dataValues.horario = convertirHoraAMPM(tour.horario);
+            return tour;
+        });
+
+        res.render('tours', { tours: toursMapeados, usuarioSesion: req.session.usuario });
+
+    } catch (error) {
+        console.error("Error al obtener tours:", error);
+        res.status(500).send("Error al obtener los tours");
+    }
 };

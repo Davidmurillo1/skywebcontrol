@@ -11,11 +11,11 @@
             <div class="equipos-container row">
                 <% if (equipos && equipos.length > 0) { %>
                     <% equipos.forEach(equipo => { %>
-                        <div class="equipo-card col-12 col-sm-6 col-md-4 mb-4"> <!-- Añadimos clases para controlar el diseño en diferentes tamaños de pantalla -->
+                        <div style="cursor: pointer" onclick="detalleEquipo(<%= equipo.id %>)" class="equipo-card col-12 col-sm-6 col-md-4 mb-4"> <!-- Añadimos clases para controlar el diseño en diferentes tamaños de pantalla -->
                             <div class="card h-100">
                                 <div class="img-container" style="height: 250px;">
                                     <% if (equipo.dataURI) { %> <!-- Verifica si el equipo tiene un Data URI -->
-                                        <img style="height: 100%;" src="<%= equipo.dataURI %>" alt="Imagen del equipo <%= equipo.nombre %>" class="card-img-top">
+                                        <img style="height: 100%;" src="<%= equipo.dataURI %>" alt="Imagen del equipo <%= equipo.nombre %>"  class="card-img-top">
                                     <% } else { %>
                                         <div class="card-img-placeholder bg-light d-flex align-items-center justify-content-center">
                                             <p class="text-muted mb-0">No hay imagen disponible</p>
@@ -46,11 +46,6 @@
                             <a href="/agregarEquipo" class="btn btn-outline-success"> Registrar Equipo</a>
                         <% } %>
                     </div>
-                    <div class="col-md-5 mb-2">
-                        <% if (usuario && usuario.role === 'admin') { %>
-                            <a href="/crear-categoria" class="btn btn-outline-primary"> Crear Categoría</a>
-                        <% } %>
-                    </div>
                 </div>
                
                 <h4>Filtrar por Categoría</h4>
@@ -74,3 +69,9 @@
 </div>
 
 
+<script>
+     function detalleEquipo(id) {
+        console.log(id);
+         window.location.href = `/detalle-equipo/${id}`;
+    }
+</script>
