@@ -25,6 +25,8 @@ router.post('/editar-categoria/:categoriaId', equipoController.postEditarCategor
 
 // //INSTACIAS DE EQUIPO
 router.get('/detalle-equipo/:id', equipoController.getDetalleEquipo);
+router.get('/registrar-instancia/:id', equipoController.getNuevaInstanciaEquipo);
+router.post('/registrar-instancia/:id', equipoController.postNuevaInstanciaEquipo);
 
 
 

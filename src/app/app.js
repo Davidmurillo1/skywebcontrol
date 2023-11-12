@@ -40,6 +40,12 @@ app.use(session({
 
 app.use(flash());
 
+// Pasar mensajes de flash a la vista
+app.use((req, res, next) => {
+  res.locals.messages = req.flash();
+  next();
+});
+
 // Middleware para hacer el usuario disponible en las vistas
 app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario;

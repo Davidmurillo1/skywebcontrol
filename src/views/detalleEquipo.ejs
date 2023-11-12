@@ -21,6 +21,12 @@
             <div class="col-md-6">
                 <div class="card-body">
                     <!-- Descripción y Detalles del Producto -->
+                    <% if (messages.exito && messages.exito.length > 0) { %>
+                        <div class="alert alert-success" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <%= messages.exito[0] %>
+                        </div>
+                    <% } %>
                     <h1 class="card-title"><%= equipo.nombre %></h1>
                     <p class="card-text"><%= equipo.descripcion %></p>
                     <p class="card-text"><small class="text-muted">Detalles adicionales:</small></p>
@@ -91,7 +97,7 @@
                     
 
 
-                    <a href="#" class="btn btn-outline-success mt-3">Añadir nueva unidad</a>
+                    <a href="/registrar-instancia/<%= equipo.id %>" class="btn btn-outline-success mt-3">Añadir nueva unidad</a>
                 </div>
             </div>
         </div>

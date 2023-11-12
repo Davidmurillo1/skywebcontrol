@@ -8,48 +8,10 @@ exports.getMostrarEquipos = async (req, res) => {
         // Categoría seleccionada desde el sidebar
         const categoriaSeleccionada = req.query.categoria;
 
-        // Configuración de la consulta
-        let queryConfig = {
-            attributes: ['id', 'nombre', 'imagen', 'categoria_id'],
-            include: [{
-                model: CategoriaEquipo,
-                attributes: ['nombre']
-            }]
-        };
-
-        // Si se seleccionó una categoría, añadimos la condición a la consulta
-        if (categoriaSeleccionada) {
-            queryConfig.where = { categoria_id: categoriaSeleccionada };
-        }
-
-        const equipos = await Equipo.findAll(queryConfig);
+        const equipos = await Equipo.obtenerEquiposPorCategoria(categoriaSeleccionada);
         
-        // Convertir cada imagen en un Data URI
-        const equiposConImagen = equipos.map(equipo => {
-            if (equipo.imagen) {
-                
-                let mimeType;
-                switch(equipo.imagen) {
-                    case '.jpg':
-                    case '.jpeg':
-                        mimeType = 'image/jpeg';
-                        break;
-                    case '.png':
-                        mimeType = 'image/png';
-                        break;
-                    case '.webp':
-                        mimeType = 'image/webp';
-                        break;
-                    default:
-                        mimeType = 'image/jpeg'; // Un valor por defecto
-                }
-                
-                const imagenBase64 = Buffer.from(equipo.imagen).toString('base64');
-                equipo.dataURI = `data:${mimeType};base64,${imagenBase64}`;
-                console.log(equipo.dataURI.substring(0, 50));  // mostrará los primeros 50 caracteres del Data URI
-            }
-            return equipo;
-        });
+        // Convertir las imágenes a Data URI
+        const equiposConImagen = Equipo.convertirImagenesADataURI(equipos);
 
         // Recuperar todas las categorías
         const categorias = await CategoriaEquipo.findAll();
@@ -116,10 +78,7 @@ exports.postAgregarEquipo = async (req, res) => {
 exports.getDetalleEquipo = async (req, res) => {
     try {
         const equipoId = req.params.id;
-        const equipo = await Equipo.findOne({
-            where: { id: equipoId },
-            include: [InstanciaEquipo] // Asegúrate de que la asociación esté bien configurada
-        });
+        const equipo = await Equipo.obtenerEquipoById(equipoId);
 
         if (!equipo) {
             // Si no se encuentra el equipo, envía una respuesta 404
@@ -159,7 +118,65 @@ exports.getDetalleEquipo = async (req, res) => {
     }
 };
 
+//AGREGAR INSTANCIAS DEL EQUIPO
+exports.getNuevaInstanciaEquipo = async (req, res) => {
+    const equipoId = req.params.id;
+    const equipo = await Equipo.obtenerEquipoById(equipoId);
 
+    if (equipo) {
+        res.render('agregarInstancia', {equipo, usuarioSesion: req.session.usuario});
+    } else {
+        req.flash('error', 'No se pudo encontrar ningún equipo');
+        res.redirect('/equipo', { flash });
+    }
+}
+exports.postNuevaInstanciaEquipo = async (req, res) => {
+    const equipoId = req.params.id;
+    
+    
+    try {
+
+        const { numeroRegistro, estado, fechaIngreso, valor } = req.body;
+        console.log("estado:", estado);
+
+        // Verificar si ya existe una instancia con el mismo num_registro para el mismo equipo
+        const instanciaExistente = await InstanciaEquipo.findOne({
+            where: {
+                equipo_id: equipoId,
+                num_registro: numeroRegistro
+            }
+        });
+
+        if (instanciaExistente) {
+            // Si ya existe, usa flash para enviar un mensaje
+            console.log('INSTANCIA EXISTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            req.flash('error', 'Ya existe una instancia del equipo con este número de registro para el equipo seleccionado.');
+            return res.redirect(`/registrar-instancia/${equipoId}`); // Ajusta la ruta según tu aplicacion
+        }
+
+        // Crear nueva instancia de equipo
+        const nuevaInstancia = await InstanciaEquipo.create({
+            equipo_id: equipoId,
+            num_registro: numeroRegistro,
+            estado: estado,
+            fecha_ingreso: fechaIngreso,
+            valor: valor
+        });
+
+        if (nuevaInstancia) {
+            // Mensaje de éxito y redirección
+            console.log('EXITOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            req.flash('exito', 'Nueva instancia de equipo registrada con éxito.');
+            return res.redirect(`/detalle-equipo/${equipoId}`, { exito, usuarioSesion: req.session.usuario }); // Ajusta la ruta según tu aplicación
+        }
+        
+    } catch (error) {
+        console.log('CATCH ERRORRRRRRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.error('Error al registrar nueva instancia de equipo:', error);
+        req.flash('error', 'Error interno del servidor');
+        res.redirect(`/detalle-equipo/${equipoId}`); // Ajusta la ruta según tu aplicación
+    }
+};
 
 
 

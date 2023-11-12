@@ -18,7 +18,8 @@ exports.login = async (req, res) => {
       };
       res.redirect('/inicio');
     } else {
-      res.status(401).send('Credenciales incorrectas');
+      req.flash('error', 'Usuario o contraseña incorrecta')
+      res.redirect('/login');
     }
   } catch (error) {
     console.error(error);
