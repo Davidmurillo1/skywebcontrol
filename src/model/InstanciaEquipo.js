@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'instancia_equipo'  // Esto especifica el nombre exacto de la tabla en tu base de datos
     });
 
+    InstanciaEquipo.sumaTotalEquipos = async function(equipoId){
+      return await InstanciaEquipo.count({
+        where: {equipo_id: equipoId}
+      });
+    };
     
     return InstanciaEquipo;
   };

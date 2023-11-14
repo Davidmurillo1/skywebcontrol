@@ -15,7 +15,7 @@
             <div class="col-md-6">
                 <!-- Imagen del Producto con Efecto Hover -->
                 <% if (equipoImagen) { %>
-                    <img style="width: 100%;" class="img-fluid rounded-start" src="<%= equipoImagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
+                    <img style="width: 100%; max-height: 500px; background-size: cover;" class="img-fluid rounded-start" src="<%= equipoImagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
                 <% } %>
             </div>
             <div class="col-md-6">
@@ -27,7 +27,14 @@
                             <%= messages.exito[0] %>
                         </div>
                     <% } %>
-                    <h1 class="card-title"><%= equipo.nombre %></h1>
+                    <div class="row d-flex flex-wrap">
+                        <div style="width: 85%;">
+                            <h1 class="card-title"><%= equipo.nombre %></h1>
+                        </div>
+                        <div class="" style="width: 15%;">
+                            <a href="#" onclick="confirmEditCategory(''); return false;" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                        </div>
+                    </div>
                     <p class="card-text"><%= equipo.descripcion %></p>
                     <p class="card-text"><small class="text-muted">Detalles adicionales:</small></p>
 

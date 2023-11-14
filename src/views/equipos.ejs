@@ -24,7 +24,8 @@
                                 </div>
                                 <div class="card-body">
                                     <h5 class="card-title"><%= equipo.nombre %></h5>
-                                    <p class="card-text">Categoría: <%= equipo.CategoriaEquipo.nombre %></p>
+                                    <p class="card-text" style="margin-bottom: 0px !important;">Categoría: <%= equipo.CategoriaEquipo.nombre %></p>
+                                    <p class="card-text" style="margin-top: 0px !important;">Cantidad:<span class="badge bg-dark" style="margin-left: 5px;"><%= equipo.sumaTotalEquipos %></span> </p>
                                 </div>
                             </div>
                         </div>                    
@@ -32,7 +33,7 @@
                 <% } else { %>
                     <p>No hay equipos registrados</p>
                 <% } %>
-                
+                 
             </div>
                         
         </div>

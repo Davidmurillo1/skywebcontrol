@@ -18,6 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'CategoriaEquipo'  // Esto especifica el nombre exacto de la tabla en tu base de datos
     });
 
+
+    // Intentar crear una nueva categoría en la base de datos
+    CategoriaEquipo.crearNuevaCategoria = async function(nombre, descripcion){
+        return await CategoriaEquipo.create({
+            nombre: nombre,
+            descripcion: descripcion
+        });
+    }
+
     return CategoriaEquipo;
 };
 

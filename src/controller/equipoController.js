@@ -15,6 +15,12 @@ exports.getMostrarEquipos = async (req, res) => {
 
         // Recuperar todas las categorías
         const categorias = await CategoriaEquipo.findAll();
+        
+        // Agregar el conteo de instancias a cada equipo
+        for (let equipo of equipos) {
+            const sumaTotalEquipos = await InstanciaEquipo.sumaTotalEquipos(equipo.id);
+            equipo.sumaTotalEquipos = sumaTotalEquipos;
+        }
 
         res.render('equipos', { equipos: equiposConImagen, categorias: categorias, usuarioSesion: req.session.usuario });
     } catch (error) {
@@ -22,10 +28,6 @@ exports.getMostrarEquipos = async (req, res) => {
         res.status(500).send("Error al obtener los equipos y categorías");
     }
 };
-
-
-
-
 
 // Mostrar el formulario para añadir un equipo
 exports.getAgregarEquipo = async (req, res) => {
@@ -47,6 +49,7 @@ exports.postAgregarEquipo = async (req, res) => {
         if (req.fileValidationError) {
             // Renderiza nuevamente la página de carga con el mensaje de error
             const categorias = await CategoriaEquipo.findAll();
+
             return res.render('agregarEquipo', { 
                 categorias: categorias, 
                 usuarioSesion: req.session.usuario, 
@@ -54,14 +57,15 @@ exports.postAgregarEquipo = async (req, res) => {
             });
         }
         
-        const { nombre, categoria_id } = req.body;
+        const { nombre, categoria_id, marca } = req.body;
         const imagen = req.file ? req.file.buffer : null;
 
         // Añadir el equipo a la base de datos
         await Equipo.create({
             nombre: nombre,
             imagen: imagen, 
-            categoria_id: categoria_id
+            categoria_id: categoria_id,
+            marca: marca
         });
 
         // Redireccionar a la lista de equipos o a donde prefieras
@@ -72,6 +76,33 @@ exports.postAgregarEquipo = async (req, res) => {
     }
 };
 
+exports.getEditarEquipo = async (req, res) => {
+    const equipoId = req.params.id;
+
+    try {
+        const equipo = await Equipo.obtenerEquipoById(equipoId);
+
+        if (equipo) {
+            await Equipo.update({
+                where: { id: equipoId } 
+            });
+
+            req.flash('exito', 'Muy bien, se ha editado el equipo correctamente');
+            return res.redirect(`/equipo-detalle/${equipoId}`, { usuarioSesion: req.session.usuario, messages: req.flash() });
+        } else {
+            req.flash('error', 'Ups, hubo un error al editar el equipo');
+            return res.redirect(`/equipo-detalle/${equipoId}`, { usuarioSesion: req.session.usuario, messages: req.flash() });
+        }
+    } catch (error) {
+        console.error('Ha ocurrido un error editar el equipo');
+        return res.redirect(`/equipo-detalle/${equipoId}`);
+    }
+    
+};
+
+exports.postEditarEquipo = async (req, res) => {
+
+};
 
 //VISTA DETALLADA DEL EQUIPO
 
@@ -85,9 +116,7 @@ exports.getDetalleEquipo = async (req, res) => {
             return res.status(404).send("Equipo no encontrado");
         }
 
-        const sumaTotalEquipos = await InstanciaEquipo.count({
-            where: { equipo_id: equipoId }
-        });
+        const sumaTotalEquipos = await InstanciaEquipo.sumaTotalEquipos(equipoId);
 
         // Contar equipos según su estado, filtrando por el modeloId
         const conteoEstados = await InstanciaEquipo.findAll({
@@ -149,7 +178,7 @@ exports.postNuevaInstanciaEquipo = async (req, res) => {
 
         if (instanciaExistente) {
             // Si ya existe, usa flash para enviar un mensaje
-            console.log('INSTANCIA EXISTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            console.log('INSTANCIA EXISTE!');
             req.flash('error', 'Ya existe una instancia del equipo con este número de registro para el equipo seleccionado.');
             return res.redirect(`/registrar-instancia/${equipoId}`); // Ajusta la ruta según tu aplicacion
         }
@@ -165,9 +194,9 @@ exports.postNuevaInstanciaEquipo = async (req, res) => {
 
         if (nuevaInstancia) {
             // Mensaje de éxito y redirección
-            console.log('EXITOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            console.log('EXITO!');
             req.flash('exito', 'Nueva instancia de equipo registrada con éxito.');
-            return res.redirect(`/detalle-equipo/${equipoId}`, { exito, usuarioSesion: req.session.usuario }); // Ajusta la ruta según tu aplicación
+            return res.redirect(`/detalle-equipo/${equipoId}`, { exito, usuarioSesion: req.session.usuario, messages: req.flash() }); // Ajusta la ruta según tu aplicación
         }
         
     } catch (error) {
@@ -180,26 +209,13 @@ exports.postNuevaInstanciaEquipo = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Mostrar el formulario para añadir una categoría
 exports.getCrearCategoria = async (req, res) => {
     try {
         // Obtener todas las categorías para el dropdown en el formulario
         const categorias = await CategoriaEquipo.findAll();
 
-        res.render('crear-categoria', { categorias: categorias, usuarioSesion: req.session.usuario });
+        res.render('crear-categoria', { categorias: categorias, usuarioSesion: req.session.usuario, messages: req.flash() });
     } catch (error) {
         console.error("Error al mostrar el formulario de categorías:", error);
         res.status(500).send("Error al mostrar el formulario de equipo");
@@ -211,17 +227,27 @@ exports.postCrearCategoria = async (req, res) => {
     const { nombre, descripcion } = req.body;
 
     try {
-        // Intentar crear una nueva categoría en la base de datos
-        await CategoriaEquipo.create({
-            nombre: nombre,
-            descripcion: descripcion
-        });
 
-        // Redirigir al usuario a la lista de categorías (o donde prefieras)
-        // Esto es solo un ejemplo, deberías redirigir donde tenga sentido en tu aplicación.
-        res.redirect('/categorias');
+        const existeCategoria = await CategoriaEquipo.findOne({
+            where: {
+                nombre: nombre
+            }
+        })
+
+        if (existeCategoria) {
+            req.flash('error', 'Ya existe una categoría con este nombre');
+            return res.redirect('/crear-categoria');
+        }
+        
+        const crearCategoria = await CategoriaEquipo.getCrearCategoria(nombre, descripcion);
+
+        if (crearCategoria) {
+            req.flash('exito', 'La categoría fue creada exitosamente');
+            return res.redirect('/categorias');
+        }
+
     } catch (error) {
-        console.error("Error al crear la categoría:", error);
+        console.error("Error al crear la categoría:");
 
         // Si hay un error, puedes redirigir al usuario de nuevo al formulario con un mensaje de error
         // o manejarlo de la manera que prefieras.

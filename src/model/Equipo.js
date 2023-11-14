@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       primaryKey: true,
       type: DataTypes.INTEGER(11),
-      allowNull: false
+      allowNull: true
     },
     nombre: {
       type: DataTypes.STRING(200),
@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
             mimeType = 'image/webp';
             break;
           default:
-            mimeType = 'image/jpeg'; // Un valor por defecto
+            mimeType = 'image/jpg'; // Un valor por defecto
         }
 
         const imagenBase64 = Buffer.from(equipo.imagen).toString('base64');

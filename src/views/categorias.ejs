@@ -10,6 +10,18 @@
         <div style="max-width: 80rem;">
             <div class="card border-light mb-3">
                 <div class="card-body">
+                    <% if (messages.exito && messages.exito.length > 0) { %>
+                        <div class="alert alert-success" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <%= messages.exito[0] %>
+                        </div>
+                    <% } %>
+                    <% if (messages.error && messages.error.length > 0) { %>
+                        <div class="alert alert-success" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <%= messages.error[0] %>
+                        </div>
+                    <% } %>
     
                     <form id="deleteForm" action="/eliminar-categoria" method="POST" style="display: none;">
                         <input type="hidden" name="categoria" id="categoriaToDelete">
