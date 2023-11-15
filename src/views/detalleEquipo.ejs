@@ -12,10 +12,10 @@
     <!-- Sección del Producto -->
     <div class="card mb-3">
         <div class="row g-0">
-            <div class="col-md-6">
+            <div class="col-md-6 d-flex justify-content-center">
                 <!-- Imagen del Producto con Efecto Hover -->
-                <% if (equipoImagen) { %>
-                    <img style="width: 100%; max-height: 500px; background-size: cover;" class="img-fluid rounded-start" src="<%= equipoImagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
+                <% if (equipo.imagen) { %>
+                    <img style="max-height: 500px; width: auto; margin: 0 auto;" class="img-fluid rounded-start" src="/<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
                 <% } %>
             </div>
             <div class="col-md-6">

@@ -2,6 +2,9 @@ const { Equipo, CategoriaEquipo, InstanciaEquipo, sequelize } = require('../mode
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = require("../public/js/multerConfig.js");
+const fs = require('fs');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 exports.getMostrarEquipos = async (req, res) => {
     try {
@@ -10,8 +13,7 @@ exports.getMostrarEquipos = async (req, res) => {
 
         const equipos = await Equipo.obtenerEquiposPorCategoria(categoriaSeleccionada);
         
-        // Convertir las imágenes a Data URI
-        const equiposConImagen = Equipo.convertirImagenesADataURI(equipos);
+        // No es necesario convertir las imágenes a Data URI
 
         // Recuperar todas las categorías
         const categorias = await CategoriaEquipo.findAll();
@@ -22,12 +24,14 @@ exports.getMostrarEquipos = async (req, res) => {
             equipo.sumaTotalEquipos = sumaTotalEquipos;
         }
 
-        res.render('equipos', { equipos: equiposConImagen, categorias: categorias, usuarioSesion: req.session.usuario });
+        // Pasa los equipos tal como están, ya que las rutas de las imágenes están almacenadas en la base de datos
+        res.render('equipos', { equipos: equipos, categorias: categorias, usuarioSesion: req.session.usuario });
     } catch (error) {
         console.error("Error al obtener equipos y categorías:", error);
         res.status(500).send("Error al obtener los equipos y categorías");
     }
 };
+
 
 // Mostrar el formulario para añadir un equipo
 exports.getAgregarEquipo = async (req, res) => {
@@ -47,28 +51,49 @@ exports.postAgregarEquipo = async (req, res) => {
     try {
         // Verificar si hay un error de validación de archivo
         if (req.fileValidationError) {
-            // Renderiza nuevamente la página de carga con el mensaje de error
             const categorias = await CategoriaEquipo.findAll();
-
             return res.render('agregarEquipo', { 
                 categorias: categorias, 
                 usuarioSesion: req.session.usuario, 
                 error: req.fileValidationError 
             });
         }
-        
+
         const { nombre, categoria_id, marca } = req.body;
-        const imagen = req.file ? req.file.buffer : null;
+        let rutaRelativaImagen = null;
+
+        if (req.file) {
+            // Generar un identificador único para el nombre del archivo
+            const extensionArchivo = path.extname(req.file.originalname);
+            const nombreArchivo = uuidv4() + extensionArchivo; // Usar UUID
+
+            // Ruta del directorio donde se guardarán las imágenes
+            const directorioImagenes = path.join(__dirname, '..', 'public', 'img', 'equipo');
+
+            // Asegurarse de que el directorio existe
+            if (!fs.existsSync(directorioImagenes)){
+                fs.mkdirSync(directorioImagenes, { recursive: true });
+            }
+
+            // Ruta completa donde se guardará la imagen en el sistema de archivos
+            const rutaCompletaImagen = path.join(directorioImagenes, nombreArchivo);
+
+            // Ruta relativa para guardar en la base de datos
+            rutaRelativaImagen = path.join('img', 'equipo', nombreArchivo);
+
+            // Guardar la imagen en el sistema de archivos
+            fs.writeFileSync(rutaCompletaImagen, req.file.buffer);
+        }
 
         // Añadir el equipo a la base de datos
         await Equipo.create({
             nombre: nombre,
-            imagen: imagen, 
+            imagen: rutaRelativaImagen, // Guardar solo la ruta relativa de la imagen
             categoria_id: categoria_id,
             marca: marca
         });
 
-        // Redireccionar a la lista de equipos o a donde prefieras
+        // Redireccionar a la lista de equipos
         res.redirect('/equipo');
     } catch (error) {
         console.error("Error al añadir el equipo:", error);
@@ -131,15 +156,9 @@ exports.getDetalleEquipo = async (req, res) => {
             conteoPorEstado[estado.estado] = estado.cantidad;
         });
 
-        // Convertir la imagen a Data URI si existe
-        // Considera manejar diferentes tipos de imágenes (no solo jpeg)
-        if (equipo.imagen) {
-            const imagenBase64 = Buffer.from(equipo.imagen).toString('base64');
-            equipo.dataURI = `data:image/jpeg;base64,${imagenBase64}`;
-        }
 
         // Renderiza la vista con los datos necesarios
-        res.render('detalleEquipo', { equipo: equipo, equipoImagen: equipo.dataURI, usuarioSesion: req.session.usuario, conteoEstados: conteoEstados, sumaTotalEquipos: sumaTotalEquipos });
+        res.render('detalleEquipo', { equipo: equipo, usuarioSesion: req.session.usuario, conteoEstados: conteoEstados, sumaTotalEquipos: sumaTotalEquipos });
         console.log(conteoEstados);
     } catch (error) {
         console.error("Error al obtener detalles del equipo:", error);

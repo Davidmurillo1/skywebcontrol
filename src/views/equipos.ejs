@@ -2,7 +2,7 @@
     <%- include('partials/headerAdmin.ejs') %>
   <% } else if (usuario && usuario.role === 'operador') { %>
     <%- include('partials/headerOperador.ejs') %>
-<% } %>>
+<% } %>
 
 <div class="container mt-5">
     <div class="row">
@@ -14,8 +14,8 @@
                         <div style="cursor: pointer" onclick="detalleEquipo(<%= equipo.id %>)" class="equipo-card col-12 col-sm-6 col-md-4 mb-4"> <!-- Añadimos clases para controlar el diseño en diferentes tamaños de pantalla -->
                             <div class="card h-100">
                                 <div class="img-container" style="height: 250px;">
-                                    <% if (equipo.dataURI) { %> <!-- Verifica si el equipo tiene un Data URI -->
-                                        <img style="height: 100%;" src="<%= equipo.dataURI %>" alt="Imagen del equipo <%= equipo.nombre %>"  class="card-img-top">
+                                    <% if (equipo.imagen) { %> <!-- Verifica si el equipo tiene un Data URI -->
+                                        <img style="height: 100%;" src="/<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>"  class="card-img-top">
                                     <% } else { %>
                                         <div class="card-img-placeholder bg-light d-flex align-items-center justify-content-center">
                                             <p class="text-muted mb-0">No hay imagen disponible</p>

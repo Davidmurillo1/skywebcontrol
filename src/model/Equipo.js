@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     imagen: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING(200),
       allowNull: true  // Permitir null ya que no todos los equipos podrían tener una imagen al inicio
     },
     categoria_id: {
