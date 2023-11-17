@@ -59,7 +59,7 @@ exports.postAgregarEquipo = async (req, res) => {
             });
         }
 
-        const { nombre, categoria_id, marca } = req.body;
+        const { nombre, categoria_id, marca, cod_barras } = req.body;
         let rutaRelativaImagen = null;
 
         if (req.file) {
@@ -79,7 +79,7 @@ exports.postAgregarEquipo = async (req, res) => {
             const rutaCompletaImagen = path.join(directorioImagenes, nombreArchivo);
 
             // Ruta relativa para guardar en la base de datos
-            rutaRelativaImagen = path.join('img', 'equipo', nombreArchivo);
+            rutaRelativaImagen = path.join('/', 'img', 'equipo', nombreArchivo);
 
             // Guardar la imagen en el sistema de archivos
             fs.writeFileSync(rutaCompletaImagen, req.file.buffer);
@@ -87,6 +87,7 @@ exports.postAgregarEquipo = async (req, res) => {
 
         // Añadir el equipo a la base de datos
         await Equipo.create({
+            cod_barras: cod_barras,
             nombre: nombre,
             imagen: rutaRelativaImagen, // Guardar solo la ruta relativa de la imagen
             categoria_id: categoria_id,
@@ -103,42 +104,122 @@ exports.postAgregarEquipo = async (req, res) => {
 
 exports.getEditarEquipo = async (req, res) => {
     const equipoId = req.params.id;
-
     try {
-        const equipo = await Equipo.obtenerEquipoById(equipoId);
+        const equipo = await Equipo.findOne({
+          where: { id: equipoId }
+        });
+
+        const categorias = await CategoriaEquipo.findAll();
+
+        const categoriaNombre = await CategoriaEquipo.findOne({
+            where: {
+                id: equipo.categoria_id
+            }
+        });
 
         if (equipo) {
-            await Equipo.update({
-                where: { id: equipoId } 
-            });
-
-            req.flash('exito', 'Muy bien, se ha editado el equipo correctamente');
-            return res.redirect(`/equipo-detalle/${equipoId}`, { usuarioSesion: req.session.usuario, messages: req.flash() });
+          res.render('editarEquipo', { equipo: equipo, usuarioSession: req.session.usuario, categorias: categorias, nombreCategoria: categoriaNombre });
         } else {
-            req.flash('error', 'Ups, hubo un error al editar el equipo');
-            return res.redirect(`/equipo-detalle/${equipoId}`, { usuarioSesion: req.session.usuario, messages: req.flash() });
+          res.status(404).send('Equipo no encontrado');
+          req.flash('error', 'Ups, no hay ningún equipo relacionado para editar')
+          res.redirect(`/equipo-detalle/${equipoId}`, { messages: req.flash(), equipo})
         }
-    } catch (error) {
-        console.error('Ha ocurrido un error editar el equipo');
-        return res.redirect(`/equipo-detalle/${equipoId}`);
-    }
-    
+      } catch (error) {
+        console.error(error);
+        res.status(500).send('Hubo un error al obtener el usuario');
+      }
 };
 
 exports.postEditarEquipo = async (req, res) => {
+    const equipoId = req.body.id;
 
+    try {
+        const equipo = await Equipo.findByPk(equipoId);
+
+        if (!equipo) {
+            req.flash('error', 'Equipo no encontrado');
+            return res.redirect(`/detalle-equipo/${equipoId}`);
+        }
+
+        // Actualizar datos del equipo
+        const { nombre, descripcion, categoria_id, marca } = req.body;
+        await Equipo.update({
+            nombre: nombre,
+            descripcion: descripcion,
+            categoria_id: categoria_id,
+            marca: marca
+        }, {
+            where: { id: equipoId }
+        });
+        
+
+        req.flash('exito', 'Equipo actualizado correctamente');
+    } catch (error) {
+        console.error("Error al editar el equipo:", error);
+        req.flash('error', 'Error al editar el equipo');
+    }
+
+    res.redirect(`/detalle-equipo/${equipoId}`);
 };
+
+exports.postEditarImagenEquipo = async (req, res) => {
+    const equipoId = req.params.id;
+    const nuevaImagen = req.file; // Asumiendo que usas algo como multer para manejar la carga de archivos
+
+    try {
+        const equipo = await Equipo.findByPk(equipoId);
+
+        if (!equipo) {
+            req.flash('error', 'Equipo no encontrado');
+            return res.redirect(`/detalle-equipo/${equipoId}`);
+        }
+
+        // Eliminar imagen antigua si existe
+        if (equipo.imagen) {
+            const rutaAntigua = (equipo.imagen);
+            if (fs.existsSync(rutaAntigua)) {
+                fs.unlinkSync(rutaAntigua);
+            }
+            console.log('ruta no existe!!!!!!!!');
+        }
+
+        // Actualizar la ruta de la imagen en la base de datos
+        const ImagenNuevaUpload = equipo.imagen = nuevaImagen.filename;
+        await CategoriaEquipo.update(
+            {
+              imagen: ImagenNuevaUpload
+            },
+            {
+              where: { id: equipoId }
+            }
+          );
+
+        req.flash('exito', 'Se ha modificado la imagen exitosamente');
+    } catch (error) {
+        console.error("Error al obtener la imagen!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", error);
+        req.flash('error', 'Ups, hubo un error al momento de actualizar la imagen');
+    }
+
+    // Redirigir al final del método
+    return res.redirect(`/detalle-equipo/${equipoId}`);
+};
+
+
+
+
 
 //VISTA DETALLADA DEL EQUIPO
 
 exports.getDetalleEquipo = async (req, res) => {
+    const equipoId = req.params.id;
+
     try {
-        const equipoId = req.params.id;
         const equipo = await Equipo.obtenerEquipoById(equipoId);
 
         if (!equipo) {
             // Si no se encuentra el equipo, envía una respuesta 404
-            return res.status(404).send("Equipo no encontrado");
+            res.status(404).send("Equipo no encontrado");
+            return res.redirect('/equipo');
         }
 
         const sumaTotalEquipos = await InstanciaEquipo.sumaTotalEquipos(equipoId);
@@ -178,13 +259,12 @@ exports.getNuevaInstanciaEquipo = async (req, res) => {
         res.redirect('/equipo', { flash });
     }
 }
+
 exports.postNuevaInstanciaEquipo = async (req, res) => {
     const equipoId = req.params.id;
     
-    
     try {
-
-        const { numeroRegistro, estado, fechaIngreso, valor } = req.body;
+        const { numeroRegistro, estado, fechaIngreso, valor, categoria } = req.body;
         console.log("estado:", estado);
 
         // Verificar si ya existe una instancia con el mismo num_registro para el mismo equipo
@@ -196,35 +276,48 @@ exports.postNuevaInstanciaEquipo = async (req, res) => {
         });
 
         if (instanciaExistente) {
-            // Si ya existe, usa flash para enviar un mensaje
             console.log('INSTANCIA EXISTE!');
             req.flash('error', 'Ya existe una instancia del equipo con este número de registro para el equipo seleccionado.');
-            return res.redirect(`/registrar-instancia/${equipoId}`); // Ajusta la ruta según tu aplicacion
+            return res.redirect(`/registrar-instancia/${equipoId}`);
         }
+
+        // Obtener nombre de la categoría
+        const cateNombre = await CategoriaEquipo.obtenerCategoriaId(categoria);
+
+        if (!cateNombre) {
+            console.log('Categoría no encontrada');
+            req.flash('error', 'Categoría no encontrada');
+            return res.redirect(`/registrar-instancia/${equipoId}`);
+        }
+
+        // Generar el código propio usando el método del modelo CategoriaEquipo
+        const codPropio = await InstanciaEquipo.generarCodigoPropio(cateNombre);
 
         // Crear nueva instancia de equipo
         const nuevaInstancia = await InstanciaEquipo.create({
             equipo_id: equipoId,
             num_registro: numeroRegistro,
+            cod_propio: codPropio,  // Agregado el código propio aquí
             estado: estado,
             fecha_ingreso: fechaIngreso,
             valor: valor
         });
 
         if (nuevaInstancia) {
-            // Mensaje de éxito y redirección
             console.log('EXITO!');
             req.flash('exito', 'Nueva instancia de equipo registrada con éxito.');
-            return res.redirect(`/detalle-equipo/${equipoId}`, { exito, usuarioSesion: req.session.usuario, messages: req.flash() }); // Ajusta la ruta según tu aplicación
         }
         
     } catch (error) {
         console.log('CATCH ERRORRRRRRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.error('Error al registrar nueva instancia de equipo:', error);
         req.flash('error', 'Error interno del servidor');
-        res.redirect(`/detalle-equipo/${equipoId}`); // Ajusta la ruta según tu aplicación
     }
+
+    res.redirect(`/detalle-equipo/${equipoId}`);
 };
+
+
 
 
 

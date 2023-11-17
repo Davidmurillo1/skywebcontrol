@@ -16,7 +16,7 @@
     }
 
     .card-header {
-        background-color: #eb6864;
+        background-color: #f44336;
         color: white;
     }
 
@@ -66,7 +66,7 @@
         toursOrdenados.forEach(tour => { 
         %>
             <div class="col-md-4">
-                <div class="card">
+                <div style="cursor: pointer;" class="card" onclick="crearTanda(<%= tour.id %>)">
                     <div class="card-header">
                         <i class="fas fa-calendar-alt"></i> <%= tour.fecha ? moment(tour.fecha).format('DD/MM/YYYY') : 'Recurrente' %>
                     </div>
@@ -89,6 +89,14 @@
         const fechaSeleccionada = document.getElementById('fecha-input').value;
         window.location.href = `/tours?fecha=${fechaSeleccionada}`;
     });
+
+
+    //REDIRECCIONA A CREAR EL TOUR CUANDO SE APRETA LA TARJETA
+    function crearTanda(id) {
+        window.location.href = `/registrar-tanda/${id}`;
+    }
+
+
 </script>
 
 

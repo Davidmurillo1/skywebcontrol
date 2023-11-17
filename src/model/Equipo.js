@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
+    cod_fabrica: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     nombre: {
       type: DataTypes.STRING(200),
       allowNull: false
@@ -64,35 +68,6 @@ module.exports = (sequelize, DataTypes) => {
     return await Equipo.findAll(queryConfig);
   };
 
-  // Método para convertir imágenes a Data URI
-  Equipo.convertirImagenesADataURI = function(equipos) {
-    return equipos.map(equipo => {
-      if (equipo.imagen) {
-        let mimeType;
-        // Aquí asumes que tienes el campo 'imagen' como extensión
-        const extension = equipo.imagen; // Esto podría necesitar ser revisado
-
-        switch(extension) {
-          case 'jpg':
-          case 'jpeg':
-            mimeType = 'image/jpeg';
-            break;
-          case 'png':
-            mimeType = 'image/png';
-            break;
-          case 'webp':
-            mimeType = 'image/webp';
-            break;
-          default:
-            mimeType = 'image/jpg'; // Un valor por defecto
-        }
-
-        const imagenBase64 = Buffer.from(equipo.imagen).toString('base64');
-        equipo.dataURI = `data:${mimeType};base64,${imagenBase64}`;
-      }
-      return equipo;
-    });
-  };
 
   // Retornar el modelo Equipo
   return Equipo;

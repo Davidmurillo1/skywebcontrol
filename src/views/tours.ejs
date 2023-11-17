@@ -33,8 +33,11 @@
                 <th>Horario</th>
                 <th>Fecha</th>
                 <th>Repetitivo</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
+                <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                <% } %>
+                
             </tr>
         </thead>
         <tbody>
@@ -49,7 +52,7 @@
                         <% } %>
                     </td>                    
                     <td><%= tour.repetir %></td>
-                    <% if (usuario && usuario.role === 'admin') { %>
+                    <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
                         <td>
                             <a href="/editar-tour/<%= tour.id %>" class="btn btn-outline-warning btn-sm">
                                 <i class="fas fa-edit"></i> Editar
@@ -60,9 +63,6 @@
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
                         </td>
-                    <% } else { %>
-                        <td>-</td>
-                        <td>-</td>
                     <% } %>
                 </tr>
             <% }); %>

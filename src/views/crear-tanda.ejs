@@ -1,0 +1,148 @@
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Registro Equipo para Tour</h2>
+    <div class="row">
+        <!-- Sección de Datos del Tour -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Datos del Tour
+                </div>
+                <div class="card-body">
+                    <!-- Formulario de Datos del Tour -->
+                    <form action="/actualizar-datos-tour/<%= tanda.id %>" method="POST"> <!-- Asegúrate de cambiar la acción y el método según tus necesidades -->
+                        <div class="row">
+                            <div class="div d-flex flex-wrap justify-content-between">
+                                <div class="tour"><p>Tour: Sky Trek</p></div>
+                                <div class="fecha"><p>Fecha: <%= moment(tanda.fecha).format('DD-MM-YYYY') %></p></div>
+                                <div class="hora"><p>Hora: <%= moment(tanda.hora, 'HH:mm').format('hh:mm A') %></p></div>
+                            </div>
+                        </div>
+                        <p>Cantidad de personas:</p>
+                        <div class="form-group">
+                            <label>Cantidad de Personas:</label>
+                            <p id="cantidadPersonasTexto" style="display: inline; color: blue;"><%= tanda.cant_personas %></p>
+                            <i class="fa-regular fa-pen-to-square" onclick="editarCampo('cantidadPersonas')"></i>
+                            <input type="number" class="form-control mb-2" id="cantidadPersonasInput" name="cant_personas" placeholder="Escribe la cantidad de personas" value="<%= tanda.cant_personas %>" style="display: none;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Head Guide:</label>
+                            <p id="headGuideTexto" style="display: inline; color: blue;"><%= tanda.tour_guide %></p>
+                            <i class="fa-regular fa-pen-to-square" onclick="editarCampo('headGuide')"></i>
+                            <input type="text" class="form-control" id="headGuideInput" name="tour_guide" placeholder="Escribe el nombre del guía" value="<%= tanda.tour_guide %>" style="display: none;">
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary mt-2" id="botonGuardar" onclick="enviarDatosTour('<%= tanda.id %>')" style="display: none;">Guardar Cambios</button>
+
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Sección de Registro de Equipos -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Registro de Equipos
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <!-- Campo para el código de barras -->
+                            <div class="col-md-4 mb-3">
+                                <label for="codigoBarras" class="form-label"><i class="fa-solid fa-barcode"></i>  Código de Barras</label>
+                                <input type="text" class="form-control" id="codigoBarras" placeholder="Código de Barras">
+                            </div>
+                    
+                            <!-- Campo para el nombre del equipo -->
+                            <div class="col-md-8 mb-3">
+                                <label for="nombreEquipo" class="form-label">Nombre del Equipo</label>
+                                <input type="text" class="form-control" id="nombreEquipo" placeholder="Nombre del Equipo">
+                            </div>
+                        </div>
+                    
+                        <!-- Botón para agregar el equipo -->
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Agregar Equipo</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Visualización de Equipos Registrados -->
+    <div class="row">
+        <!-- Tarjeta para Casco -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                Cascos
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Cod</th>
+                            <th>Nombre</th>
+                            <th style="text-align: right;">Eliminar</th> <!-- Columna para el icono de eliminar -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Aquí van los elementos de la lista de cascos -->
+                        <tr>
+                            <td>12345</td>
+                            <td>Casco Montaña</td>
+                            <td class="text-center">
+                                <a style=" padding-left: 45%;" href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <!-- Repetir para cada casco -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Arneses
+                </div>
+                <div class="card-body">
+                    <!-- Lista de Arneses registrados con opción de eliminar -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Poleas
+                </div>
+                <div class="card-body">
+                    <!-- Lista de Poleas registradas con opción de eliminar -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Confirmación de Emisión de Tanda -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success">Confirmar Emisión de Tanda</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/gestionTandas.js"></script>

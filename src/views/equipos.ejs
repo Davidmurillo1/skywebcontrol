@@ -15,7 +15,7 @@
                             <div class="card h-100">
                                 <div class="img-container" style="height: 250px;">
                                     <% if (equipo.imagen) { %> <!-- Verifica si el equipo tiene un Data URI -->
-                                        <img style="height: 100%;" src="/<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>"  class="card-img-top">
+                                        <img style="height: 100%;" src="<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>"  class="card-img-top">
                                     <% } else { %>
                                         <div class="card-img-placeholder bg-light d-flex align-items-center justify-content-center">
                                             <p class="text-muted mb-0">No hay imagen disponible</p>

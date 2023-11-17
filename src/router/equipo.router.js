@@ -11,6 +11,11 @@ router.get('/equipo', equipoController.getMostrarEquipos);
 router.get('/agregarEquipo', equipoController.getAgregarEquipo);
 router.post('/agregarEquipo', upload.single('imagen'), equipoController.postAgregarEquipo);
 
+router.get('/editar-equipo/:id', equipoController.getEditarEquipo);
+router.post('/editar-equipo', equipoController.postEditarEquipo);
+
+router.post('/editar-imagen-equipo/:id', upload.single('file'), equipoController.postEditarImagenEquipo);
+
 router.get('/crear-categoria', equipoController.getCrearCategoria);
 router.post('/crear-categoria', equipoController.postCrearCategoria);
 

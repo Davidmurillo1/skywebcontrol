@@ -15,7 +15,13 @@
             <div class="col-md-6 d-flex justify-content-center">
                 <!-- Imagen del Producto con Efecto Hover -->
                 <% if (equipo.imagen) { %>
-                    <img style="max-height: 500px; width: auto; margin: 0 auto;" class="img-fluid rounded-start" src="/<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
+                    <img style="max-height: 500px; width: auto; margin: 0 auto;" class="img-fluid rounded-start" src="<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
+                    <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+                        <button style="display: block;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarImagenModal">
+                            Editar Imagen
+                        </button>
+                    <% } %>
+                    
                 <% } %>
             </div>
             <div class="col-md-6">
@@ -27,13 +33,23 @@
                             <%= messages.exito[0] %>
                         </div>
                     <% } %>
+                    <% if (messages.error && messages.error.length > 0) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <%= messages.error[0] %>
+                        </div>
+                    <% } %>
                     <div class="row d-flex flex-wrap">
                         <div style="width: 85%;">
-                            <h1 class="card-title"><%= equipo.nombre %></h1>
+                            <p style="margin-bottom: 0px;">Cod fábrica: <%= equipo.cod_fabrica %></p>
+                            <h1 style="margin-top: 0px;" class="card-title"><%= equipo.nombre %></h1>
                         </div>
-                        <div class="" style="width: 15%;">
-                            <a href="#" onclick="confirmEditCategory(''); return false;" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
-                        </div>
+                        <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+                            <div class="" style="width: 15%;">
+                                <a href="/editar-equipo/<%= equipo.id %>" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                            </div>
+                        <% } %>
+                        
                     </div>
                     <p class="card-text"><%= equipo.descripcion %></p>
                     <p class="card-text"><small class="text-muted">Detalles adicionales:</small></p>
@@ -110,19 +126,62 @@
         </div>
     </div>
 
-    <!-- Reseñas y Valoraciones -->
+    <!-- INSTANCIAS -->
     <div class="mb-4">
         <!-- Sección de Instancias del Equipo -->
         <h3 class="titulo-instancias">Unidades Disponibles:</h3>
         <div class="instancias-container d-flex">
             <% equipo.InstanciaEquipos.forEach(instancia => { %>
-                <div class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>;">
+                <div title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>;">
                     <span class="estado-numero"><%= instancia.num_registro %></span>
                 </div>
             <% }) %>
         </div>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="editarImagenModal" tabindex="-1" aria-labelledby="editarImagenModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarImagenModalLabel">Editar Imagen del Equipo: <%= equipo.nombre %></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensajes flash para errores o confirmaciones -->
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
+                    <% if (messages.exito) { %>
+                        <div class="alert alert-success">
+                            <%= messages.exito %>
+                        </div>
+                    <% } %>
+
+                    <!-- Formulario para subir nueva imagen -->
+                    <form action="/editar-imagen-equipo/<%= equipo.id %>" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Nueva Imagen:</label>
+                            <input type="file" id="file" name="file" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Actualizar Imagen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
+
+
+
+
 
 
 <style>
@@ -141,6 +200,41 @@
         font-size: 16px;
         color: white;
     }
+
+    /* Estilos para el modal */
+    .modal-header {
+        background-color: #f8f9fa; /* Color de fondo del encabezado */
+        border-bottom: 1px solid #dee2e6; /* Borde inferior */
+    }
+
+    .modal-title {
+        color: #495057; /* Color del título */
+    }
+
+    .modal-body {
+        padding: 20px; /* Espaciado interno */
+    }
+
+    .modal-footer {
+        background-color: #f8f9fa; /* Color de fondo del pie de página */
+        border-top: 1px solid #dee2e6; /* Borde superior */
+    }
+
+    /* Estilos para el formulario */
+    .form-group {
+        margin-bottom: 15px; /* Espaciado inferior */
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px; /* Espaciado inferior del label */
+    }
+
+    .form-group input[type="file"] {
+        display: block;
+        width: 100%; /* Ancho completo */
+    }
+
 </style>
 
 </div>

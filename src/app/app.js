@@ -6,6 +6,7 @@ const authRoutes = require('../router/auth.router');
 const usuariosRoutes = require('../router/usuario.router');
 const toursRoutes = require('../router/tour.router');
 const equipoRoutes = require('../router/equipo.router');
+const tandaRoutes = require('../router/tanda.router');
 const morgan = require("morgan");
 const { sequelize } = require('../model/db');
 const path = require('path');
@@ -61,5 +62,6 @@ app.use(authRoutes);
 app.use(usuariosRoutes);
 app.use(toursRoutes);
 app.use(equipoRoutes);
+app.use(tandaRoutes);
 
 module.exports = app;

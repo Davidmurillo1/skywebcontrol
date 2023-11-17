@@ -1,4 +1,6 @@
 // models/CategoriaEquipo.js
+
+
 module.exports = (sequelize, DataTypes) => {
     const CategoriaEquipo = sequelize.define('CategoriaEquipo', {
         id: {
@@ -26,6 +28,18 @@ module.exports = (sequelize, DataTypes) => {
             descripcion: descripcion
         });
     }
+
+    CategoriaEquipo.obtenerCategoriaId = async function(id){
+        const categoria= await CategoriaEquipo.findOne({
+            where:{
+                id: id
+            }
+        })
+
+        return await categoria.nombre;
+    };
+
+    
 
     return CategoriaEquipo;
 };

@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      cod_propio: {
+        type: DataTypes.STRING(200),
+        allowNull: false
+      },
       estado: {
         type: DataTypes.STRING(200),
         allowNull: false
@@ -30,6 +34,29 @@ module.exports = (sequelize, DataTypes) => {
         where: {equipo_id: equipoId}
       });
     };
+
+    InstanciaEquipo.generarCodigoPropio = async function(categoria_nombre) {
+      const primeraLetra = categoria_nombre.charAt(0).toUpperCase();
+      const ultimaInstancia = await InstanciaEquipo.findOne({
+          where: {
+              cod_propio: sequelize.where(
+                  sequelize.fn('substring', sequelize.col('cod_propio'), 1, 1),
+                  primeraLetra
+              )
+          },
+          order: [['cod_propio', 'DESC']]
+      });
+  
+      let nuevoNumero = 101; // Número inicial
+      if (ultimaInstancia) {
+          const ultimoNumero = parseInt(ultimaInstancia.cod_propio.substring(1));
+          if (!isNaN(ultimoNumero)) {
+              nuevoNumero = ultimoNumero + 1;
+          }
+      }
+  
+      return primeraLetra + nuevoNumero;
+  };
     
     return InstanciaEquipo;
   };
