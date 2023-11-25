@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     descripcion: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(2000),
       allowNull: true
     },
     imagen: {

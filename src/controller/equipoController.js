@@ -239,7 +239,7 @@ exports.getDetalleEquipo = async (req, res) => {
 
 
         // Renderiza la vista con los datos necesarios
-        res.render('detalleEquipo', { equipo: equipo, usuarioSesion: req.session.usuario, conteoEstados: conteoEstados, sumaTotalEquipos: sumaTotalEquipos });
+        res.render('detalleEquipo', { equipo: equipo, messages: req.flash(), usuarioSesion: req.session.usuario, conteoEstados: conteoEstados, sumaTotalEquipos: sumaTotalEquipos });
         console.log(conteoEstados);
     } catch (error) {
         console.error("Error al obtener detalles del equipo:", error);
@@ -253,10 +253,10 @@ exports.getNuevaInstanciaEquipo = async (req, res) => {
     const equipo = await Equipo.obtenerEquipoById(equipoId);
 
     if (equipo) {
-        res.render('agregarInstancia', {equipo, usuarioSesion: req.session.usuario});
+        res.render('agregarInstancia', {equipo, usuarioSesion: req.session.usuario });
     } else {
         req.flash('error', 'No se pudo encontrar ningún equipo');
-        res.redirect('/equipo', { flash });
+        res.redirect('/equipo');
     }
 }
 
@@ -303,18 +303,21 @@ exports.postNuevaInstanciaEquipo = async (req, res) => {
             valor: valor
         });
 
-        if (nuevaInstancia) {
-            console.log('EXITO!');
-            req.flash('exito', 'Nueva instancia de equipo registrada con éxito.');
-        }
+    
+        console.log('EXITO!');
+        req.flash('exito', 'Nueva instancia de equipo registrada con éxito.');
+        return res.redirect(`/detalle-equipo/${equipoId}`);
+        
         
     } catch (error) {
         console.log('CATCH ERRORRRRRRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         console.error('Error al registrar nueva instancia de equipo:', error);
         req.flash('error', 'Error interno del servidor');
+        return res.redirect(`/detalle-equipo/${equipoId}`);
     }
 
-    res.redirect(`/detalle-equipo/${equipoId}`);
+    
+    
 };
 
 
@@ -327,7 +330,7 @@ exports.getCrearCategoria = async (req, res) => {
         // Obtener todas las categorías para el dropdown en el formulario
         const categorias = await CategoriaEquipo.findAll();
 
-        res.render('crear-categoria', { categorias: categorias, usuarioSesion: req.session.usuario, messages: req.flash() });
+        res.render('crear-categoria', { categorias: categorias, usuarioSesion: req.session.usuario });
     } catch (error) {
         console.error("Error al mostrar el formulario de categorías:", error);
         res.status(500).send("Error al mostrar el formulario de equipo");
@@ -339,6 +342,7 @@ exports.postCrearCategoria = async (req, res) => {
     const { nombre, descripcion } = req.body;
 
     try {
+        
 
         const existeCategoria = await CategoriaEquipo.findOne({
             where: {
@@ -351,20 +355,22 @@ exports.postCrearCategoria = async (req, res) => {
             return res.redirect('/crear-categoria');
         }
         
-        const crearCategoria = await CategoriaEquipo.getCrearCategoria(nombre, descripcion);
+        const crearCategoria = await CategoriaEquipo.crearNuevaCategoria(nombre, descripcion);
 
         if (crearCategoria) {
             req.flash('exito', 'La categoría fue creada exitosamente');
-            return res.redirect('/categorias');
         }
 
     } catch (error) {
-        console.error("Error al crear la categoría:");
+        console.error("Error al crear la categoría:", error);
 
         // Si hay un error, puedes redirigir al usuario de nuevo al formulario con un mensaje de error
-        // o manejarlo de la manera que prefieras.
-        res.status(500).render('crearCategoria', { error: 'Error al crear la categoría. Por favor, inténtalo de nuevo.' });
+        // o manejarlo de la manera que prefieras.}
+        req.flash('error', 'No se pudo registrar la categoría con éxito')
+        return res.redirect('/crear-categoria');
     }
+
+    res.redirect('/categorias');
 };
 
 

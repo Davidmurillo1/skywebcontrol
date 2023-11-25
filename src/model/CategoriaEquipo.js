@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         descripcion: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(200),
             allowNull: true  // Permitir null, ya que la descripción podría ser opcional
         }
     }, {
-      tableName: 'CategoriaEquipo'  // Esto especifica el nombre exacto de la tabla en tu base de datos
+      tableName: 'categoriaequipo'  // Esto especifica el nombre exacto de la tabla en tu base de datos
     });
 
 

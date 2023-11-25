@@ -12,6 +12,18 @@
     <div class="row">
         <!-- Sección de Datos del Tour -->
         <div class="col-md-6">
+            <% if (messages.exito && messages.exito.length > 0) { %>
+                <div class="alert alert-success" role="alert" id="alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.exito[0] %>
+                </div>
+            <% } %>
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-danger" role="alert" id="alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %> 
             <div class="card mb-4">
                 <div class="card-header">
                     Datos del Tour
@@ -26,7 +38,6 @@
                                 <div class="hora"><p>Hora: <%= moment(tanda.hora, 'HH:mm').format('hh:mm A') %></p></div>
                             </div>
                         </div>
-                        <p>Cantidad de personas:</p>
                         <div class="form-group">
                             <label>Cantidad de Personas:</label>
                             <p id="cantidadPersonasTexto" style="display: inline; color: blue;"><%= tanda.cant_personas %></p>
@@ -34,7 +45,7 @@
                             <input type="number" class="form-control mb-2" id="cantidadPersonasInput" name="cant_personas" placeholder="Escribe la cantidad de personas" value="<%= tanda.cant_personas %>" style="display: none;">
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <label>Head Guide:</label>
                             <p id="headGuideTexto" style="display: inline; color: blue;"><%= tanda.tour_guide %></p>
                             <i class="fa-regular fa-pen-to-square" onclick="editarCampo('headGuide')"></i>
@@ -56,12 +67,12 @@
                     Registro de Equipos
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form id="formDos" data-tanda-id="<%= tanda.id %>" action="/registrar-equipo-tanda/<%= tanda.id %>" method="post">
                         <div class="row">
                             <!-- Campo para el código de barras -->
                             <div class="col-md-4 mb-3">
-                                <label for="codigoBarras" class="form-label"><i class="fa-solid fa-barcode"></i>  Código de Barras</label>
-                                <input type="text" class="form-control" id="codigoBarras" placeholder="Código de Barras">
+                                <label for="codigoBarras" class="form-label"><i class="fa-solid fa-barcode"></i> Código de Barras</label>
+                                <input type="text" class="form-control" id="codigoBarras" name="cod_propio" placeholder="Código de Barras">
                             </div>
                     
                             <!-- Campo para el nombre del equipo -->
@@ -71,9 +82,21 @@
                             </div>
                         </div>
                     
-                        <!-- Botón para agregar el equipo -->
-                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Agregar Equipo</button>
+
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Agregar Equipo
+                        </button>
+                        
                     </form>
+                    
+                    <!-- Div para mostrar mensajes de error -->
+                    <div id="mensajeError" style="display: none;" class="alert alert-danger"></div>
+                    <audio id="sonidoError" src="/sounds/error_effect.mp3"></audio>
+                    <!-- Div para mostrar mensajes de EXITO -->
+                    <div id="mensajeExito" style="display: none;" class="alert alert-success"></div>
+                    <audio id="sonidoExito" src="/sounds/success_effect.mp3"></audio>
+                    
                     
                 </div>
             </div>
@@ -82,67 +105,44 @@
 
     <!-- Sección de Visualización de Equipos Registrados -->
     <div class="row">
-        <!-- Tarjeta para Casco -->
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                Cascos
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th>Cod</th>
-                            <th>Nombre</th>
-                            <th style="text-align: right;">Eliminar</th> <!-- Columna para el icono de eliminar -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Aquí van los elementos de la lista de cascos -->
-                        <tr>
-                            <td>12345</td>
-                            <td>Casco Montaña</td>
-                            <td class="text-center">
-                                <a style=" padding-left: 45%;" href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        <!-- Repetir para cada casco -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    Arneses
-                </div>
-                <div class="card-body">
-                    <!-- Lista de Arneses registrados con opción de eliminar -->
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    Poleas
-                </div>
-                <div class="card-body">
-                    <!-- Lista de Poleas registradas con opción de eliminar -->
-                </div>
-            </div>
-        </div>
+        <div id="contenedor-tablas" class="d-flex flex-wrap justify-content-around"></div>
     </div>
 
-    <!-- Sección de Confirmación de Emisión de Tanda -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-success">Confirmar Emisión de Tanda</button>
-            </div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-2">
+            <button style="padding: 15px 25px;" class="btn btn-outline-success">Registrar Tanda</button>
         </div>
+        
     </div>
+
 </div>
 
+<script>
+    const tandaId = '<%= tanda.id %>';
+</script>
+<script>
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Selecciona los mensajes de alerta
+        const alertSuccess = document.getElementById('alert-success');
+        const alertDanger = document.getElementById('alert-danger');
+
+        // Establece un temporizador para ocultar el mensaje de éxito
+        if (alertSuccess) {
+            setTimeout(() => {
+                alertSuccess.style.display = 'none';
+            }, 3000);
+        }
+
+        // Establece un temporizador para ocultar el mensaje de error
+        if (alertDanger) {
+            document.getElementById('sonidoError').play();
+            setTimeout(() => {
+                alertDanger.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
 
 <script src="/js/gestionTandas.js"></script>

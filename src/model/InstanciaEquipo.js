@@ -1,6 +1,11 @@
 // models/InstanciaEquipo.js
 module.exports = (sequelize, DataTypes) => {
     const InstanciaEquipo = sequelize.define('InstanciaEquipo', {
+      id: {
+        primaryKey: true,
+        type: DataTypes.INTEGER(11),
+        allowNull: true
+      },
       equipo_id: {
         type: DataTypes.INTEGER,
         allowNull: false

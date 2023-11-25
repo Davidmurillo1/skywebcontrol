@@ -1,14 +1,18 @@
 // models/Tanda.js
 module.exports = (sequelize, DataTypes) => {
     const Tanda = sequelize.define('Tanda', {
-      tour_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      id: {
+        primaryKey: true,
+        type: DataTypes.INTEGER(11),
+        allowNull: true
       },
       tour_id: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
-        // Si tienes una relación con otra tabla, puedes usar references: { model: 'OtraTabla', key: 'id' }
+      },
+      registrada: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       fecha: {
         type: DataTypes.DATEONLY,

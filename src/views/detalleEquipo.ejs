@@ -130,14 +130,17 @@
     <div class="mb-4">
         <!-- Sección de Instancias del Equipo -->
         <h3 class="titulo-instancias">Unidades Disponibles:</h3>
-        <div class="instancias-container d-flex">
-            <% equipo.InstanciaEquipos.forEach(instancia => { %>
+        <div class="instancias-container d-flex"> 
+            <% equipo.InstanciaEquipos.sort((a, b) => a.num_registro - b.num_registro);  %>
+    
+            <% equipo.InstanciaEquipos.forEach(instancia => {  %>
                 <div title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>;">
                     <span class="estado-numero"><%= instancia.num_registro %></span>
                 </div>
             <% }) %>
         </div>
     </div>
+    
 
 
     <!-- Modal -->
