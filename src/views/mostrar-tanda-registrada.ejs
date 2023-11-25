@@ -1,0 +1,86 @@
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Detalle de la tanda Registrada</h2>
+    <div class="row">
+        <!-- Sección de Datos del Tour -->
+        <div class="col-md-6">
+            <% if (messages.exito && messages.exito.length > 0) { %>
+                <div class="alert alert-success" role="alert" id="alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.exito[0] %>
+                </div>
+            <% } %>
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-danger" role="alert" id="alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %> 
+            <div class="card mb-4">
+                <div class="card-header">
+                    Datos del Tour
+                </div>
+                <div class="card-body">
+                    <!-- Formulario de Datos del Tour -->
+                        <div class="row">
+                            <div class="div d-flex flex-wrap justify-content-between">
+                                <div class="tour"><p>Tour: Sky Trek</p></div>
+                                <div class="fecha"><p>Fecha: <%= moment(tanda.fecha).format('DD-MM-YYYY') %></p></div>
+                                <div class="hora"><p>Hora: <%= moment(tanda.hora, 'HH:mm').format('hh:mm A') %></p></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: inline;">Cantidad de Personas: <strong><%= tanda.cant_personas %></strong>  </label>
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            <label style="display: inline;">Head Guide: <strong><%= tanda.tour_guide %></strong> </label>
+                        </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Visualización de Equipos Registrados -->
+    <div class="row">
+        <div id="contenedor-tablas" class="d-flex flex-wrap justify-content-around"></div>
+    </div>
+</div>
+
+<script>
+    const tandaId = '<%= tanda.id %>';
+</script>
+<script>
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Selecciona los mensajes de alerta
+        const alertSuccess = document.getElementById('alert-success');
+        const alertDanger = document.getElementById('alert-danger');
+
+        // Establece un temporizador para ocultar el mensaje de éxito
+        if (alertSuccess) {
+            setTimeout(() => {
+                alertSuccess.style.display = 'none';
+            }, 3000);
+        }
+
+        // Establece un temporizador para ocultar el mensaje de error
+        if (alertDanger) {
+            document.getElementById('sonidoError').play();
+            setTimeout(() => {
+                alertDanger.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+
+<script src="/js/TandasRegistradas.js"></script>

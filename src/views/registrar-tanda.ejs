@@ -1,7 +1,28 @@
-<h1>Registrar Tanda</h1>
-    <p>Tour: <%= tour.id %></p>
-    <!-- Formulario para registrar la tanda -->
-    <form action="/ruta-para-registrar-tanda" method="post">
-        <!-- Añade campos del formulario aquí -->
-        <input type="submit" value="Registrar Tanda">
-    </form>
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Añadir Tanda</h1>
+                    <hr>
+                    <h3 class="text-center">Detalles del Tour <%= tour.id %></h3>
+                    <p class="text-center"><strong>Fecha:</strong> <%= fechaHoy %></p>
+                    <p class="text-center"><strong>Hora:</strong> <%= tour.horario %></p>
+                    <hr>
+                    <form action="/registrar-nueva-tanda/<%= tour.id %>" method="post" class="mt-4">
+                        <input type="hidden" name="fecha" value="<%= fechaHoy %>">
+                        <input type="hidden" name="hora" value="<%= tour.horario %>">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-outline-success btn-lg">Registrar Tanda</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -93,7 +93,8 @@
 
     //REDIRECCIONA A CREAR EL TOUR CUANDO SE APRETA LA TARJETA
     function crearTanda(id) {
-        window.location.href = `/mostrar-tanda/${id}`;
+        const fechaSeleccionada = document.getElementById('fecha-input').value;
+        window.location.href = `/mostrar-tanda/${id}?fecha=${fechaSeleccionada}`;
     }
 
 

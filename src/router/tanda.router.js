@@ -4,11 +4,14 @@ const tandaController = require('../controller/tandaController');
 
 const router = express.Router();
 
+//MOSTRAR TANDA PARA REGISTRAR EQUIPOS
 router.get('/mostrar-tanda/:id', tandaController.getTanda);
-// //VERIFICAR SI EXISTE LA TANDA
-// router.get('/verificar-tanda/:id', tandaController.getVerificarTanda);
 //REGITRAR TANDA
 router.get('/registrar-nueva-tanda/:id', tandaController.getRegistrarTanda);
+router.post('/registrar-nueva-tanda/:id', tandaController.postRegistrarTanda);
+//MOSTRAR TANDA REGISTRADA EXITOSAMENTE
+router.get('/mostrar-tanda-registrada/:id', tandaController.getTandaRegistrada);
+
 
 
 router.get('/api/equipos/:tandaId', tandaController.getEquiposPorTanda);

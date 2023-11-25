@@ -5,6 +5,7 @@ const moment = require("moment");
 
 exports.getTanda = async (req, res) => {
     const tourId = req.params.id;
+    const fechaSeleccionada = req.query.fecha || moment().format('YYYY-MM-DD'); // Usa la fecha actual como predeterminada si no se proporciona
     
     try {
         const fechaHoy = moment().format('YYYY-MM-DD');
@@ -18,10 +19,32 @@ exports.getTanda = async (req, res) => {
             return res.status(404).send('Tour no encontrado');
         }
 
+        //TANDA YA ESTÁ REGISTRADA
+        const tandaRegistrada = await Tanda.findOne({
+            where: {
+                registrada: true,
+                tour_id: tourId,
+                fecha: fechaSeleccionada
+            }
+        });
+
+        if (tandaRegistrada) {
+            // Si la tanda ya está registrada para esa fecha
+            req.flash('error', 'Ya existe una tanda registrada para esta fecha.');
+            return res.render('mostrar-tanda-registrada', { 
+                tanda: tandaRegistrada, 
+                tour: tour, 
+                usuarioSesion: req.session.usuario, 
+                moment,
+                flash: req.flash()
+            });
+        }
+
         const tandaPendienteSeleccionada = await Tanda.findOne({
             where: {
                 registrada: false,
-                tour_id: tourId
+                tour_id: tourId,
+                fecha: fechaSeleccionada
             }
         });
 
@@ -84,6 +107,7 @@ exports.getRegistrarTanda = async (req, res) => {
             tour: tour, 
             usuarioSesion: req.session.usuario, 
             moment,
+            fechaHoy: fechaHoy
         });
 
     } catch (error) {
@@ -92,10 +116,28 @@ exports.getRegistrarTanda = async (req, res) => {
     }
 };
 
+exports.postRegistrarTanda = async (req, res) => {
+    const tourId = req.params.id;
+    const {fecha, hora} = req.body;
 
+    try {
+        await Tanda.create({
+            tour_id: tourId,
+            fecha: fecha,
+            hora: hora,
+            usuario: req.session.usuario.usuario
+        })
 
+        return res.redirect(`/mostrar-tanda/${tourId}?fecha=${fecha}`);
+    } catch (error) {
+        console.error('Hubo un error al momento de crear la tanda', error)
+    }
 
+}
 
+exports.getTandaRegistrada = async (req, res) => {
+    res.render('mostrar-tanda-registrada')
+}
 
 
 
