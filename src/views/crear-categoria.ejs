@@ -1,48 +1,74 @@
-<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
-    <%- include('partials/headerAdmin.ejs') %>
-<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
-    <%- include('partials/headerOperador.ejs') %>
-<% } %>
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %> <%-
+include('partials/headerAdmin.ejs') %> <% } else if (usuarioSesion &&
+usuarioSesion.role === 'operador') { %> <%-
+include('partials/headerOperador.ejs') %> <% } %>
 
 <div class="container mt-5 d-flex justify-content-center">
-    <div class="card border-secondary mb-3" style="max-width: 60rem;">
-        <div class="card-body">
-            <% if (messages.exito && messages.exito.length > 0) { %>
-                <div class="alert alert-success" role="alert">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <%= messages.exito[0] %>
-                </div>
-            <% } %>
-            <% if (messages.error && messages.error.length > 0) { %>
-                <div class="alert alert-success" role="alert">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <%= messages.error[0] %>
-                </div>
-            <% } %>            
-          <h4 class="card-title">Crear Nueva Categoría de Equipo</h4>
-          <form action="/crear-categoria" method="post">
-            <!-- Campo para el nombre de la categoría -->
-            <div class="mb-3">
-                <label for="nombreCategoria" class="form-label">Nombre de la Categoría:</label>
-                <input type="text" class="form-control" id="nombreCategoria" name="nombre" required>
-            </div>
-    
-            <!-- Campo para la descripción de la categoría -->
-            <div class="mb-3">
-                <label for="descripcionCategoria" class="form-label">Descripción:</label>
-                <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="3"></textarea>
-            </div>
-    
-            <!-- Botón para enviar el formulario -->
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Crear Categoría</button>
-                <div class="row">
-                    <a href="/equipo" class="text primary mt-3" style="text-decoration: none;">Volver</a>
-                </div>
-            </div>
-        </form>
-        </div>
+  <div class="card border-secondary mb-3" style="max-width: 60rem">
+    <div class="card-body">
+      <% if (messages.exito && messages.exito.length > 0) { %>
+      <div class="alert alert-success" role="alert">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+        <%= messages.exito[0] %>
       </div>
-    
-    
+      <% } %> <% if (messages.error && messages.error.length > 0) { %>
+      <div class="alert alert-success" role="alert">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+        <%= messages.error[0] %>
+      </div>
+      <% } %>
+      <h4 class="card-title">Crear Nueva Categoría de Equipo</h4>
+      <form action="/crear-categoria" method="post">
+        <!-- Campo para el nombre de la categoría -->
+        <div class="mb-3">
+          <label for="nombreCategoria" class="form-label"
+            >Nombre de la Categoría:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="nombreCategoria"
+            name="nombre"
+            required
+          />
+        </div>
+
+        <!-- Campo para la descripción de la categoría -->
+        <div class="mb-3">
+          <label for="descripcionCategoria" class="form-label"
+            >Descripción:</label
+          >
+          <textarea
+            class="form-control"
+            id="descripcionCategoria"
+            name="descripcion"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Botón para enviar el formulario -->
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Crear Categoría
+          </button>
+          <div class="row">
+            <a
+              href="/equipo"
+              class="text primary mt-3"
+              style="text-decoration: none"
+              >Volver</a
+            >
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

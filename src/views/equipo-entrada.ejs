@@ -1,14 +1,14 @@
-<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+<!-- <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
     <%- include('partials/headerAdmin.ejs') %>
 <% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
     <%- include('partials/headerOperador.ejs') %>
-<% } %>
+<% } %> -->
 
 
 
 
 <div class="container mt-5">
-    <h2 class="mb-4">Registro Equipo para Tour</h2>
+    <h2 class="mb-4"><i style="color: red;" class="fa-solid fa-rotate-left"></i>   Registro de Equipo Regresado</h2>
     <div class="row">
         <!-- Sección de Datos del Tour -->
         <div class="col-md-6">
@@ -23,14 +23,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <%= messages.error[0] %>
                 </div>
-            <% } %>
-            <% if (messages.info && messages.info.length > 0) { %>
-                <div class="alert alert-secondary" role="alert" id="alert-danger">
-                    <div id="info"></div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <%= messages.info[0] %>
-                </div>
-               
             <% } %> 
             <div class="card mb-4">
                 <div class="card-header">
@@ -38,29 +30,14 @@
                 </div>
                 <div class="card-body">
                     <!-- Formulario de Datos del Tour -->
-                    <form action="/actualizar-datos-tour/<%= tanda.id %>" method="POST"> <!-- Asegúrate de cambiar la acción y el método según tus necesidades -->
+                    <form action="/actualizar-datos-tour/" method="POST"> <!-- Asegúrate de cambiar la acción y el método según tus necesidades -->
                         <div class="row">
                             <div class="div d-flex flex-wrap justify-content-between">
                                 <div class="tour"><p>Tour: Sky Trek</p></div>
-                                <div class="fecha"><p>Fecha: <%= moment(tanda.fecha).format('DD-MM-YYYY') %></p></div>
-                                <div class="hora"><p>Hora: <%= moment(tanda.hora, 'HH:mm').format('hh:mm A') %></p></div>
+                                <div class="fecha"><p>Fecha:  <%= moment(entrada.fecha).format('DD-MM-YY'); %></p></div>
+                                <div class="hora"><p>Hora: <%= moment(entrada.hora, "HH:mm").format('h:mm A') %></p></div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Cantidad de Personas:</label>
-                            <p id="cantidadPersonasTexto" style="display: inline; color: blue;"><%= tanda.cant_personas %></p>
-                            <i class="fa-regular fa-pen-to-square" onclick="editarCampo('cantidadPersonas')"></i>
-                            <input type="number" class="form-control mb-2" id="cantidadPersonasInput" name="cant_personas" placeholder="Escribe la cantidad de personas" value="<%= tanda.cant_personas %>" style="display: none;">
-                        </div>
-                        
-                        <div class="form-group mt-3">
-                            <label>Head Guide:</label>
-                            <p id="headGuideTexto" style="display: inline; color: blue;"><%= tanda.tour_guide %></p>
-                            <i class="fa-regular fa-pen-to-square" onclick="editarCampo('headGuide')"></i>
-                            <input type="text" class="form-control" id="headGuideInput" name="tour_guide" placeholder="Escribe el nombre del guía" value="<%= tanda.tour_guide %>" style="display: none;">
-                        </div>
-                        
-                        <button type="button" class="btn btn-primary mt-2" id="botonGuardar" onclick="enviarDatosTour('<%= tanda.id %>')" style="display: none;">Guardar Cambios</button>
 
                     </form>
                 </div>
@@ -75,7 +52,7 @@
                     Registro de Equipos
                 </div>
                 <div class="card-body">
-                    <form id="formDos" data-tanda-id="<%= tanda.id %>" action="/registrar-equipo-tanda/<%= tanda.id %>" method="post">
+                    <form id="formDos" data-entrada-id="<%= entrada.id %>" action="/registrar-equipo-entrada/" method="post">
                         <div class="row">
                             <!-- Campo para el código de barras -->
                             <div class="col-md-4 mb-3">
@@ -101,7 +78,6 @@
                     <!-- Div para mostrar mensajes de error -->
                     <div id="mensajeError" style="display: none;" class="alert alert-danger"></div>
                     <audio id="sonidoError" src="/sounds/error_effect.mp3"></audio>
-                    <audio id="sonidoTandaPendiente" src="/sounds/tanda-pendiente-voz.mp3"></audio>
                     <!-- Div para mostrar mensajes de EXITO -->
                     <div id="mensajeExito" style="display: none;" class="alert alert-success"></div>
                     <audio id="sonidoExito" src="/sounds/success_effect.mp3"></audio>
@@ -127,20 +103,22 @@
 
 </div>
 
+
+
 <script>
-    const tandaId = '<%= tanda.id %>';
+    const entradaId = '<%= entrada.id %>';
 </script>
+
+<!-- SCRIPT PARA LAS ALERTAS, SU SONIDO Y SU DURACIÓN -->
 <script>
     // Espera a que el DOM esté completamente cargado
     document.addEventListener('DOMContentLoaded', (event) => {
         // Selecciona los mensajes de alerta
         const alertSuccess = document.getElementById('alert-success');
         const alertDanger = document.getElementById('alert-danger');
-        const alertInfo = document.getElementById('info');
 
         // Establece un temporizador para ocultar el mensaje de éxito
         if (alertSuccess) {
-            document.getElementById('sonidoExito').play();
             setTimeout(() => {
                 alertSuccess.style.display = 'none';
             }, 3000);
@@ -153,11 +131,7 @@
                 alertDanger.style.display = 'none';
             }, 3000);
         }
-
-        if (alertInfo) {
-            document.getElementById('sonidoTandaPendiente').play();
-        }
     });
 </script>
 
-<script src="/js/gestionTandas.js"></script>
+<script src="/js/entradaEquipoTandas.js"></script>

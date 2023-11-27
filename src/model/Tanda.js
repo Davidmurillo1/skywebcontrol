@@ -1,10 +1,12 @@
 // models/Tanda.js
 module.exports = (sequelize, DataTypes) => {
-    const Tanda = sequelize.define('Tanda', {
+  const Tanda = sequelize.define(
+    "Tanda",
+    {
       id: {
         primaryKey: true,
         type: DataTypes.INTEGER(11),
-        allowNull: true
+        allowNull: true,
       },
       tour_id: {
         type: DataTypes.INTEGER(11),
@@ -24,22 +26,21 @@ module.exports = (sequelize, DataTypes) => {
       },
       cant_personas: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
       },
       tour_guide: {
         type: DataTypes.STRING(200),
-        allowNull: true
+        allowNull: true,
       },
       usuario: {
         type: DataTypes.STRING(200),
-        allowNull: false
-      }
-    }, {
-      tableName: 'tanda'
-    });
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "tanda",
+    }
+  );
 
-
-
-    return Tanda;
-  };
-  
+  return Tanda;
+};

@@ -1,5 +1,43 @@
+// Modificar el evento submit del formulario para llamar a actualizarTablas
+document.getElementById("formDos").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const entradaId = this.dataset.entradaId;
+    const codigoBarras = document.getElementById("codigoBarras").value;
+  
+    fetch("/registrar-equipo-entrada/" + entradaId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cod_propio: codigoBarras }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          document.getElementById("codigoBarras").value = "";
+          document.getElementById("sonidoExito").play();
+          document.getElementById("mensajeExito").textContent = data.message;
+          document.getElementById("mensajeExito").style.display = "block";
+          setTimeout(function () {
+            document.getElementById("mensajeExito").style.display = "none";
+          }, 1000);
+          actualizarTablas(entradaId); // Actualizar tablas después de registrar con éxito
+        } else {
+          document.getElementById("codigoBarras").value = "";
+          document.getElementById("sonidoError").play();
+          document.getElementById("mensajeError").textContent = data.message;
+          document.getElementById("mensajeError").style.display = "block";
+          setTimeout(function () {
+            document.getElementById("mensajeError").style.display = "none";
+          }, 3000);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  });
+
+
+
+//CODIGO PARA MOSTRAR LOS EQUIPOS QUE SE VAN REGISTRANDO
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("/api/equipos/" + tandaId)
+  fetch("/api/equipos-entrada/" + entradaId)
     .then((response) => response.json())
     .then((equipos) => {
       const equiposPorCategoria = equipos.reduce((categorias, equipo) => {
@@ -18,8 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Función para actualizar las tablas de equipos
-function actualizarTablas(tandaId) {
-  fetch("/api/equipos/" + tandaId)
+function actualizarTablas(entradaId) {
+  fetch("/api/equipos-entrada/" + entradaId)
     .then((response) => response.json())
     .then((equipos) => {
       const equiposPorCategoria = equipos.reduce((categorias, equipo) => {
@@ -60,7 +98,7 @@ function crearTablas(equiposPorCategoria) {
 
       const tabla = document.createElement("table");
       tabla.classList.add("table", "table-borderless", "table", "table-hover");
-      tabla.innerHTML = `<thead><tr><th>Cod</th><th>Nombre</th><th>Eliminar</th></tr></thead>`;
+      tabla.innerHTML = `<thead><tr><th>Cod</th><th>Nombre</th><th><i class="fa-solid fa-trash"></i></th></tr></thead>`;
       const tbody = document.createElement("tbody");
       tbody.setAttribute("id", `tabla-body-${categoria}`);
       tabla.appendChild(tbody);
@@ -76,7 +114,7 @@ function crearTablas(equiposPorCategoria) {
     // Añadir filas para cada equipo en la categoría
     equiposPorCategoria[categoria].forEach((equipo) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${equipo.InstanciaEquipo.cod_propio}</td><td>${equipo.InstanciaEquipo.Equipo.nombre} N°${equipo.InstanciaEquipo.num_registro} | ${equipo.InstanciaEquipo.Equipo.marca}</td><td>Eliminar</td>`;
+      tr.innerHTML = `<td>${equipo.InstanciaEquipo.cod_propio}</td><td>${equipo.InstanciaEquipo.Equipo.nombre} N°${equipo.InstanciaEquipo.num_registro} | ${equipo.InstanciaEquipo.Equipo.marca}</td><td><i style="color: red;" class="fa-solid fa-trash"></i></td>`;
       document.querySelector(`#tabla-body-${categoria}`).appendChild(tr);
     });
   });

@@ -1,65 +1,64 @@
-<% if (usuario && usuario.role === 'admin') { %>
-    <%- include('partials/headerAdmin.ejs') %>
-<% } else if (usuario && usuario.role === 'operador') { %>
-    <%- include('partials/headerOperador.ejs') %>
-<% } %>
-
-
-
+<% if (usuario && usuario.role === 'admin') { %> <%-
+include('partials/headerAdmin.ejs') %> <% } else if (usuario && usuario.role ===
+'operador') { %> <%- include('partials/headerOperador.ejs') %> <% } %>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Dashboard de Configuraciones</h2>
+  <h2 class="mb-4">Dashboard de Configuraciones</h2>
 
-    <div class="row">
-        <!-- Crear horarios de tour -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fa-regular fa-clock fa-3x mb-3"></i>
-                    <h5 class="card-title">Horarios de Tour</h5>
-                    <p class="card-text">Crea y gestiona los horarios de los tours.</p>
-                    <a href="/crear-horario" class="btn btn-outline-primary">Ir a Horarios</a>
-                </div>
-            </div>
+  <div class="row">
+    <!-- Crear horarios de tour -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa-regular fa-clock fa-3x mb-3"></i>
+          <h5 class="card-title">Horarios de Tour</h5>
+          <p class="card-text">Crea y gestiona los horarios de los tours.</p>
+          <a href="/crear-horario" class="btn btn-outline-primary"
+            >Ir a Horarios</a
+          >
         </div>
-
-        <!-- Crear usuarios -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fa-regular fa-user fa-3x mb-3"></i>
-                    <h5 class="card-title">Usuarios</h5>
-                    <p class="card-text">Administra los usuarios y asigna roles.</p>
-                    <a href="/usuarios" class="btn btn-outline-primary">Ir a Usuarios</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Crear productos -->
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fa-solid fa-helmet-safety fa-3x mb-3"></i>
-                    <h5 class="card-title">Equipo</h5>
-                    <p class="card-text">Añade y gestiona el equipo disponible.</p>
-                    <a href="/equipo" class="btn btn-outline-primary">Ir a Equipo</a>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fa-solid fa-list-ul fa-3x mb-3"></i>
-                    <h5 class="card-title">Categorías</h5>
-                    <p class="card-text">Añade y gestiona las categorías para los equipos.</p>
-                    <a href="/categorias" class="btn btn-outline-primary">Ir a Categorías</a>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- ... Puedes agregar más secciones según lo necesites ... -->
+    <!-- Crear usuarios -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa-regular fa-user fa-3x mb-3"></i>
+          <h5 class="card-title">Usuarios</h5>
+          <p class="card-text">Administra los usuarios y asigna roles.</p>
+          <a href="/usuarios" class="btn btn-outline-primary">Ir a Usuarios</a>
+        </div>
+      </div>
+    </div>
 
+    <!-- Crear productos -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-helmet-safety fa-3x mb-3"></i>
+          <h5 class="card-title">Equipo</h5>
+          <p class="card-text">Añade y gestiona el equipo disponible.</p>
+          <a href="/equipo" class="btn btn-outline-primary">Ir a Equipo</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-list-ul fa-3x mb-3"></i>
+          <h5 class="card-title">Categorías</h5>
+          <p class="card-text">
+            Añade y gestiona las categorías para los equipos.
+          </p>
+          <a href="/categorias" class="btn btn-outline-primary"
+            >Ir a Categorías</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ... Puedes agregar más secciones según lo necesites ... -->
 </div>

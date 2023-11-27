@@ -8,10 +8,9 @@
 
 
 <div class="container mt-5">
-    <h2 class="mb-4">Detalle de la tanda Registrada</h2>
-    <div class="row">
+    <div class="row d-flex justify-content-center">
         <!-- Sección de Datos del Tour -->
-        <div class="col-md-6">
+        <div class="col-md-6 text-center">
             <% if (messages.exito && messages.exito.length > 0) { %>
                 <div class="alert alert-success" role="alert" id="alert-success">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -23,7 +22,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <%= messages.error[0] %>
                 </div>
-            <% } %> 
+            <% } %>
+            <h2 class="mb-4"><i style="color: green;" class="fa-regular fa-circle-check"></i>    Detalle de la tanda Registrada</h2>
             <div class="card mb-4">
                 <div class="card-header">
                     Datos del Tour
@@ -52,6 +52,7 @@
 
     <!-- Sección de Visualización de Equipos Registrados -->
     <div class="row">
+        <h3><i class="fa-solid fa-helmet-safety"></i>   Equipo Registrado en la Tanda</h3>
         <div id="contenedor-tablas" class="d-flex flex-wrap justify-content-around"></div>
     </div>
 </div>
