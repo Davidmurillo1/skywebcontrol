@@ -1,0 +1,100 @@
+<% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+<% } else if (usuarioSesion && usuarioSesion.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+<% } %>
+
+
+
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <!-- Sección de Datos del Tour -->
+        <div class="col-md-6 text-center">
+            <% if (messages.exito && messages.exito.length > 0) { %>
+                <div class="alert alert-success" role="alert" id="alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.exito[0] %>
+                </div>
+            <% } %>
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-danger" role="alert" id="alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+            <h2 class="mb-4"><i style="color: red;" class="fa-regular fa-circle-check"></i>    Detalle de la Entrada Registrada</h2>
+            <div class="card mb-4">
+                <div class="card-header">
+                    Datos del Tour
+                </div>
+                <div class="card-body">
+                    <!-- Formulario de Datos del Tour -->
+                        <div class="row">
+                            <div class="div d-flex flex-wrap justify-content-between">
+                                <div class="tour"><p>Tour: Sky Trek</p></div>
+                                <div class="fecha"><p>Fecha: <%= moment(entrada.fecha).format('DD-MM-YY'); %></p></div>
+                                <div class="hora"><p>Hora: <%= moment(entrada.hora, 'HH:mm').format('hh:mm A') %></p></div>
+                            </div>
+                        </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Visualización de Equipos Registrados -->
+    <div class="row">
+        <h3><i class="fa-solid fa-helmet-safety"></i>   Equipo Registrado devuelto</h3>
+        <div id="contenedor-tablas" class="d-flex flex-wrap justify-content-around"></div>
+    </div>
+</div>
+
+<script>
+    const entradaId = '<%= entrada.id %>';
+
+    //CODIGO PARA MOSTRAR LOS EQUIPOS QUE SE VAN REGISTRANDO
+    document.addEventListener("DOMContentLoaded", () => {
+    fetch("/api/equipos-entrada/" + entradaId)
+        .then((response) => response.json())
+        .then((equipos) => {
+        const equiposPorCategoria = equipos.reduce((categorias, equipo) => {
+            // Asumiendo que 'equipo' tiene una propiedad 'categoria'
+            const categoria = equipo.InstanciaEquipo.Equipo.CategoriaEquipo.nombre;
+            if (!categorias[categoria]) {
+            categorias[categoria] = [];
+            }
+            categorias[categoria].push(equipo);
+            return categorias;
+        }, {});
+
+        crearTablas(equiposPorCategoria);
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+</script>
+<script>
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Selecciona los mensajes de alerta
+        const alertSuccess = document.getElementById('alert-success');
+        const alertDanger = document.getElementById('alert-danger');
+
+        // Establece un temporizador para ocultar el mensaje de éxito
+        if (alertSuccess) {
+            setTimeout(() => {
+                alertSuccess.style.display = 'none';
+            }, 3000);
+        }
+
+        // Establece un temporizador para ocultar el mensaje de error
+        if (alertDanger) {
+            document.getElementById('sonidoError').play();
+            setTimeout(() => {
+                alertDanger.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+
+<script src="/js/entradasRegistradas.js"></script>

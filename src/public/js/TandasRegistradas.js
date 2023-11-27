@@ -60,7 +60,7 @@ function crearTablas(equiposPorCategoria) {
 
       const tabla = document.createElement("table");
       tabla.classList.add("table", "table-borderless", "table", "table-hover");
-      tabla.innerHTML = `<thead><tr><th>Cod</th><th>Nombre</th><th>Eliminar</th></tr></thead>`;
+      tabla.innerHTML = `<thead><tr><th>Cod</th><th>Nombre</th></tr></thead>`;
       const tbody = document.createElement("tbody");
       tbody.setAttribute("id", `tabla-body-${categoria}`);
       tabla.appendChild(tbody);
@@ -76,7 +76,7 @@ function crearTablas(equiposPorCategoria) {
     // Añadir filas para cada equipo en la categoría
     equiposPorCategoria[categoria].forEach((equipo) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${equipo.InstanciaEquipo.cod_propio}</td><td>${equipo.InstanciaEquipo.Equipo.nombre} N°${equipo.InstanciaEquipo.num_registro} | ${equipo.InstanciaEquipo.Equipo.marca}</td><td>Eliminar</td>`;
+      tr.innerHTML = `<td>${equipo.InstanciaEquipo.cod_propio}</td><td>${equipo.InstanciaEquipo.Equipo.nombre} N°${equipo.InstanciaEquipo.num_registro} | ${equipo.InstanciaEquipo.Equipo.marca}</td>`;
       document.querySelector(`#tabla-body-${categoria}`).appendChild(tr);
     });
   });

@@ -14,6 +14,12 @@ router.post("/registrar-equipo-entrada/:id", entradaController.registrarEquipoEn
 
 router.get("/api/equipos-entrada/:entradaId", entradaController.getEquiposPorEntrada);
 
+//ACTUALIZAR ESTADO DE LA ENTRADA SIN GUARDAR
+router.post("/guardar-entrada/:id", entradaController.postguardarEntrada);
+
+//MOSTRAR ENTRADA REGISTRADA EXITOSAMENTE
+router.get("/mostrar-entrada-registrada/:id", entradaController.getEntradaRegistrada);
+
 
 module.exports = router;
 
