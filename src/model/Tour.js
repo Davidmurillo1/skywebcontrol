@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER(11),
         allowNull: true,
       },
+      nombre: {
+        type: DataTypes.STRING(200),
+        allowNull: false
+      },
       horario: {
         type: DataTypes.TIME,
         allowNull: false,

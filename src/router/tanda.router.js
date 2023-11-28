@@ -28,4 +28,7 @@ router.post(
   tandaController.registrarEquipoTanda
 );
 
+//MOSTRAR TANDA REGISTRADA EXITOSAMENTE
+router.get("/lista-tandas", tandaController.getMostrarTandasRealizadas);
+
 module.exports = router;

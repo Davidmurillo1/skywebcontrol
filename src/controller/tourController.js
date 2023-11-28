@@ -10,11 +10,12 @@ exports.getCrearTour = (req, res) => {
 
 exports.postCrearTour = async (req, res) => {
   try {
-    const { horaInicio, fecha, opcionFecha } = req.body;
+    const { horaInicio, fecha, opcionFecha, nombre } = req.body;
     const repetir = opcionFecha === "repetir";
 
     // Crear nuevo tour
     const newTour = await Tour.create({
+      nombre: nombre,
       horario: horaInicio,
       fecha: repetir ? null : fecha, // Si es un tour recurrente, fecha es null
       repetir: repetir,

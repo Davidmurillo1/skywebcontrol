@@ -15,15 +15,25 @@
                     <form action="/crear-tour" method="post">
 
                         <div class="mb-3">
+                            <label for="nombre">Nombre del tour</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nombre" value="Sky Trek" >
+                                <label for="">Sky Trek</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nombre" value="Sky Limit">
+                                <label for="">Sky Limit</label>
+                            </div>
+
                             <label class="form-label"><i class="fas fa-calendar-alt"></i> Fecha del Tour</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="opcionFecha" id="opcionEspecifica" value="especifica" checked>
+                                <input class="form-check-input" type="radio" name="opcionFecha" id="opcionEspecifica" value="especifica" >
                                 <label class="form-check-label" for="opcionEspecifica">
                                     Fecha específica
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="opcionFecha" id="opcionRepetir" value="repetir">
+                                <input class="form-check-input" type="radio" name="opcionFecha" id="opcionRepetir" value="repetir" checked>
                                 <label class="form-check-label" for="opcionRepetir">
                                     Repetir todos los días
                                 </label>
@@ -48,13 +58,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     // Script para mostrar/ocultar el input de fecha según la opción seleccionada
-    $('input[name="opcionFecha"]').on('change', function() {
-        if ($('#opcionEspecifica').is(':checked')) {
-            $('#fecha').prop('disabled', false);
-        } else {
-            $('#fecha').prop('disabled', true);
-        }
+    document.addEventListener("DOMContentLoaded", () => {
+        // Deshabilitar campo de fecha al cargar la página
+        $('#fecha').prop('disabled', true);
+
+        // Manejar el cambio de opciones
+        $('input[name="opcionFecha"]').on('change', function() {
+            if ($('#opcionRepetir').is(':checked')) {
+                $('#fecha').prop('disabled', true);
+            } else {
+                $('#fecha').prop('disabled', false);
+            }
+        });
     });
+    
 
     
 </script>

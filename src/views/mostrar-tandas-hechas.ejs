@@ -1,0 +1,70 @@
+<% if (usuario && usuario.role === 'admin') { %>
+    <%- include('partials/headerAdmin.ejs') %>
+  <% } else if (usuario && usuario.role === 'operador') { %>
+    <%- include('partials/headerOperador.ejs') %>
+  <% } %>
+
+  <%- console.log(usuario); %>
+
+
+<section class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="mb-4">Lista de Tandas de registro de equipos</h2>
+        </div>
+        <div class="col-md-4 d-md-flex flex-md-row-reverse">
+            <!-- Tarjeta compacta para la fecha y botón -->
+            <div class="card date-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <input type="date" class="form-control d-inline-block" style="width: auto;" value="<%= fecha %>" id="fecha-input">
+                    <button class="btn btn-outline-secondary ml-2" id="aplicar-fecha-btn">Aplicar Fecha</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Tour</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Cant Personas</th>
+                    <th>Head Guide</th>
+                    <th>Bodeguero</th>
+                </tr>  
+            </thead>
+         
+            <% tandas.forEach(tanda => { %>
+            
+            <tbody>
+                <tr>
+                    <td><%= tanda.Tour.nombre %></td>
+                    <td><%= tanda.fecha %></td>
+                    <td><%= moment(tanda.hora, 'HH:mm').format('hh:mm A') %></td>
+                    <td><%= tanda.cant_personas %></td>
+                    <td><%= tanda.tour_guide %></td>
+                    <td><%= tanda.usuario %></td>
+                </tr>
+            </tbody>
+            
+        <% }); %>
+        </table>
+    </div>
+    
+
+</section>
+
+<script>
+    // Añade un evento de click al botón para redirigir al usuario a la URL con la nueva fecha
+    document.getElementById('aplicar-fecha-btn').addEventListener('click', () => {
+        const fechaSeleccionada = document.getElementById('fecha-input').value;
+        window.location.href = `/lista-tandas?fecha=${fechaSeleccionada}`;
+    });
+</script>
+
+
+</body>
+
+</html>

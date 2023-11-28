@@ -307,3 +307,32 @@ exports.registrarEquipoTanda = async (req, res) => {
     });
   }
 };
+
+exports.getMostrarTandasRealizadas = async (req, res) => {
+  
+  try {
+    const fechaSeleccionada = req.query.fecha || moment().format("YYYY-MM-DD");
+
+    const tandas = await  Tanda.findAll({
+      where: {
+        registrada: true,
+        fecha: fechaSeleccionada
+      },
+      include: [{
+        model: Tour,
+        attributes: ['nombre']
+      }]
+    })
+
+    if (!tandas) {
+      req.flash('error', 'No hay ninguna tanda que mostrar');
+    }
+
+    res.render('mostrar-tandas-hechas', { tandas: tandas, moment, usuarioSesion: req.session.usuario, messages: req.flash(), fecha: fechaSeleccionada });
+  } catch (error) {
+    console.error('Ha ocurrido un error en obtener la lista de las tandas completadas: ', error);
+    req.flash('error', 'Ha ocurrido un error al momento de obtener la lista de tandas.');
+  }
+
+  
+}
