@@ -27,10 +27,12 @@ module.exports = (sequelize, DataTypes) => {
       cant_personas: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        defaultValue: ""
       },
       tour_guide: {
         type: DataTypes.STRING(200),
         allowNull: true,
+        defaultValue: ""
       },
       usuario: {
         type: DataTypes.STRING(200),
