@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  },
+  {
+    tableName: "tandainstancia",
+  }
+  
+  );
   return TandaInstancia;
 };
