@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       descripcion: {
         type: DataTypes.STRING(2000),
         allowNull: true,
+        defaultValue: ""
       },
       imagen: {
         type: DataTypes.STRING(200),
