@@ -134,9 +134,25 @@
             <% equipo.InstanciaEquipos.sort((a, b) => a.num_registro - b.num_registro);  %>
     
             <% equipo.InstanciaEquipos.forEach(instancia => {  %>
-                <div title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>;">
+                <div id="abrirInstancia<%= instancia.num_registro %>" title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>; cursor: pointer;">
                     <span class="estado-numero"><%= instancia.num_registro %></span>
                 </div>
+                <!-- modal -->
+                <div id="instanciaModal<%= instancia.num_registro %>" class="modal">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title"> <%= equipo.nombre %> N°<%= instancia.num_registro %> </h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p><strong>Código propio:</strong> <%= instancia.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             <% }) %>
         </div>
     </div>
@@ -251,3 +267,37 @@
         default: return '#B2BABB';
     }
 } %>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Para abrir los modales
+    var openCircles = document.querySelectorAll('.estado-circulo');
+    openCircles.forEach(function(circle) {
+        circle.addEventListener('click', function(event) {
+            // Extraemos el número de registro del id del elemento
+            var numRegistro = circle.id.match(/\d+/)[0];
+            // Construimos el id del modal correspondiente y lo mostramos
+            var modalId = 'instanciaModal' + numRegistro;
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        });
+    });
+
+    // Para cerrar los modales
+    var closeButtons = document.querySelectorAll('.btn-close');
+    closeButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            // Buscamos el elemento modal más cercano y lo cerramos
+            var modal = event.target.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+});
+
+</script>

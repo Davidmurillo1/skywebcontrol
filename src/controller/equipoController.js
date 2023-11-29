@@ -264,6 +264,7 @@ exports.getDetalleEquipo = async (req, res) => {
       group: ["estado"],
     });
 
+
     // Convertir a un objeto para un acceso fácil por estado
     let conteoPorEstado = {};
     conteoEstados.forEach((estado) => {

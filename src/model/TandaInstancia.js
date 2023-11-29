@@ -15,5 +15,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   
   );
+
+  // Método para obtener un equipo por ID
+  TandaInstancia.obtenerUsosInstancia = async function (instanciaId) {
+    return await TandaInstancia.count({
+      where: { instancia_id: instanciaId }
+    });
+  };
+
+
+
   return TandaInstancia;
 };

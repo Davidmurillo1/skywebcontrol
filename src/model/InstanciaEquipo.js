@@ -1,3 +1,5 @@
+const TandaInstancia = require("./TandaInstancia");
+
 // models/InstanciaEquipo.js
 module.exports = (sequelize, DataTypes) => {
   const InstanciaEquipo = sequelize.define(
@@ -65,6 +67,15 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     return primeraLetra + nuevoNumero;
+  };
+
+  //SABER CANTIDAD DE USOS DE UNA INSTANCIA
+  // Método para obtener un equipo por ID
+  InstanciaEquipo.obtenerUsoInstanciaById = async function (instanciaId) {
+
+    return InstanciaEquipo.findOne({
+      where: { id: instanciaId },
+    });
   };
 
   return InstanciaEquipo;

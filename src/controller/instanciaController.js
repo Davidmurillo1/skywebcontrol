@@ -51,3 +51,13 @@ const getInstancias = {
     }
   },
 };
+
+exports.getUsosInstanciaById = async (req, res) => {
+  const instanciaId = req.params.id;
+
+  try {
+    
+  } catch (error) {
+    
+  }
+}

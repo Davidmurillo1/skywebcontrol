@@ -2,11 +2,11 @@ const { Sequelize } = require("sequelize");
 
 // Utilizar variables de entorno para la configuración
 const sequelize = new Sequelize(
-  process.env.DB_NAME, 
-  process.env.DB_USER, 
+  process.env.DB_NAME || "skycontrol", 
+  process.env.DB_USER || "root", 
   process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    host: process.env.DB_HOST || "localhost",
+    dialect: process.env.DB_DIALECT || "mysql",
     port: process.env.DB_PORT || 3306,
 });
 
