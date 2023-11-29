@@ -16,11 +16,11 @@
                 <!-- Imagen del Producto con Efecto Hover -->
                 <% if (equipo.imagen) { %>
                     <img style="max-height: 500px; width: auto; margin: 0 auto;" class="img-fluid rounded-start" src="<%= equipo.imagen %>" alt="Imagen del equipo <%= equipo.nombre %>" >
-                    <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+                    <!-- <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
                         <button style="display: block;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarImagenModal">
                             Editar Imagen
                         </button>
-                    <% } %>
+                    <% } %> -->
                     
                 <% } %>
             </div>
@@ -44,11 +44,11 @@
                             <p style="margin-bottom: 0px;">Cod fábrica: <%= equipo.cod_fabrica %></p>
                             <h1 style="margin-top: 0px;" class="card-title"><%= equipo.nombre %></h1>
                         </div>
-                        <!-- <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
+                        <% if (usuarioSesion && usuarioSesion.role === 'admin') { %>
                             <div class="" style="width: 15%;">
                                 <a href="/editar-equipo/<%= equipo.id %>" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                             </div>
-                        <% } %> -->
+                        <% } %>
                         
                     </div>
                     <p class="card-text"><%= equipo.descripcion %></p>
