@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       cant_personas: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: ""
+        defaultValue: 0
       },
       tour_guide: {
         type: DataTypes.STRING(200),
