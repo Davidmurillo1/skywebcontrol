@@ -1,10 +1,15 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("skycontrol", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-  port: process.env.port || 3306,
+// Utilizar variables de entorno para la configuración
+const sequelize = new Sequelize(
+  process.env.DB_NAME, 
+  process.env.DB_USER, 
+  process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    port: process.env.DB_PORT || 3306,
 });
+
 
 const Equipo = require("./Equipo")(sequelize, Sequelize.DataTypes);
 const InstanciaEquipo = require("./InstanciaEquipo")(sequelize, Sequelize.DataTypes);
