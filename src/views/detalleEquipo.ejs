@@ -134,25 +134,10 @@
             <% equipo.InstanciaEquipos.sort((a, b) => a.num_registro - b.num_registro);  %>
     
             <% equipo.InstanciaEquipos.forEach(instancia => {  %>
-                <div id="abrirInstancia<%= instancia.num_registro %>" title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>; cursor: pointer;">
+                <div title="Cod: <%= instancia.cod_propio %>" class="estado-circulo" style="background-color: <%= getColorEstado(instancia.estado) %>; cursor: pointer;">
                     <span class="estado-numero"><%= instancia.num_registro %></span>
                 </div>
-                <!-- modal -->
-                <div id="instanciaModal<%= instancia.num_registro %>" class="modal">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title"> <%= equipo.nombre %> N°<%= instancia.num_registro %> </h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"></span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <p><strong>Código propio:</strong> <%= instancia.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                
             <% }) %>
         </div>
     </div>
